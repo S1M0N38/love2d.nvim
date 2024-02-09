@@ -14,12 +14,12 @@ end
 ---@param path string: The path to the Love2D project
 love2d.run = function(path)
   love2d.job = {} -- reset job
-  vim.notify("Running Love2D project at " .. path, vim.log.levels.INFO)
+  vim.notify("Running LÖVE project at " .. path)
   local cmd = require("love2d.config").options.path_to_love .. " " .. path
   love2d.job.id = vim.fn.jobstart(cmd, {
     on_exit = function(_, code)
-      vim.print("Love2D exited with code " .. code)
       love2d.job.exit_code = code
+      love2d.job.id = nil
     end,
   })
 end
