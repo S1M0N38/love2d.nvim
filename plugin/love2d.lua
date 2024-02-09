@@ -15,3 +15,7 @@ vim.api.nvim_create_user_command("LoveRun", function(args)
     require("love2d").run(path)
   end
 end, { nargs = "?", complete = "dir" })
+
+vim.api.nvim_create_user_command("LoveStop", function(args)
+  require("love2d").stop()
+end, {})
