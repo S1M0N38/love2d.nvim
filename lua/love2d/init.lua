@@ -24,4 +24,14 @@ love2d.run = function(path)
   })
 end
 
+---Stop the running project
+love2d.stop = function()
+  if not love2d.job.id then
+    vim.notify("No LÖVE project running.", vim.log.levels.ERROR)
+    return
+  end
+  vim.notify("Stop LÖVE project")
+  vim.fn.jobstop(love2d.job.id)
+end
+
 return love2d
