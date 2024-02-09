@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  luarocks-release:
+    name: LuaRocks release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: nvim-neorocks/luarocks-tag-release@v5
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+        with:
+          detailed_description: |
+            A simple way to kickstart your Neovim plugin development like a pro with:
+            - Plugin Structure
+            - Tests
+            - Docs Generation
+            - Linting and Formatting
+            - Deployment
+          dependencies: |
+            plenary.nvim
+          copy_directories: |
+            {{ neovim.plugin.dirs }}
+  github-release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1

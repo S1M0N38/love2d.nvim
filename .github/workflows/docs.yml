@@ -1,0 +1,61 @@
+name: Docs
+
+on: [push]
+
+jobs:
+  build-sources:
+    name: Generate docs
+
+    permissions:
+      contents: write
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            url: https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+    steps:
+      - uses: actions/checkout@v3
+      - run: date +%F > todays-date
+      - name: Restore cache for today's nightly.
+        uses: actions/cache@v3
+        with:
+          path: _neovim
+          key: ${{ runner.os }}-${{ matrix.url }}-${{ hashFiles('todays-date') }}
+
+      - name: Prepare
+        run: |
+          test -d _neovim || {
+            mkdir -p _neovim
+            curl -sL ${{ matrix.url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
+          }
+          mkdir -p ~/.local/share/nvim/site/pack/vendor/start
+          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
+          git clone https://github.com/tjdevries/tree-sitter-lua ~/.local/share/nvim/site/pack/vendor/start/tree-sitter-lua
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
+
+      - name: Build parser
+        run: |
+          # We have to build the parser every single time to keep up with parser changes
+          cd ~/.local/share/nvim/site/pack/vendor/start/tree-sitter-lua
+          git checkout 86f74dfb69c570f0749b241f8f5489f8f50adbea
+          make dist
+          cd -
+
+      - name: Generating docs
+        run: |
+          export PATH="${PWD}/_neovim/bin:${PATH}"
+          export VIM="${PWD}/_neovim/share/nvim/runtime"
+          nvim --version
+          make docs
+
+      - name: Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5.0.0
+        with:
+          file_pattern: 'doc/*.txt'
+          commit_message: "docs(build): auto-generate doc"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
