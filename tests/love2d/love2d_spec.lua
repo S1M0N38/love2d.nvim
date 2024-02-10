@@ -8,7 +8,7 @@ if vim.fn.has("mac") == 1 then
   }
 elseif vim.fn.has("linux") == 1 then
   opts = {
-    path_to_love = "/usr/bin/love",
+    path_to_love = "love",
     path_to_love_library = "",
   }
 else
