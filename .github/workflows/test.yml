@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+
       - name: Prepare
         run: |
           test -d _neovim || {
@@ -32,4 +33,4 @@ jobs:
           nvim --version
           love --version
           which love
-          sudo xvfb-run -a -e  "/usr/bin/love" "tests/game"
+          sudo xvfb-run -a -e make test
