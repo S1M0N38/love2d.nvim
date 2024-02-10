@@ -12,12 +12,8 @@ jobs:
         include:
           - os: ubuntu-latest
             rev: nightly/nvim-linux64.tar.gz
-            manager: sudo apt-get
-            packages: -y ripgrep love
           - os: ubuntu-latest
             rev: v0.9.0/nvim-linux64.tar.gz
-            manager: sudo apt-get
-            packages: -y ripgrep love
     steps:
       - uses: actions/checkout@v3
       - run: date +%F > todays-date
@@ -29,9 +25,11 @@ jobs:
 
       - name: Prepare
         run: |
-          sudo add-apt-repository ppa:bartbes/love-stable
-          ${{ matrix.manager }} update
-          ${{ matrix.manager }} install ${{ matrix.packages }}
+          sudo apt update -y
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository -y ppa:bartbes/love-stable
+          sudo apt update -y
+          sudo apt install -y love
           test -d _neovim || {
             mkdir -p _neovim
             curl -sL "https://github.com/neovim/neovim/releases/download/${{ matrix.rev }}" | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
