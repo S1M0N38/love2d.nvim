@@ -33,4 +33,4 @@ jobs:
           nvim --version
           love --version
           which love
-          sudo xvfb-run -a -e make test
+          sudo xvfb-run love "${PWD}/tests/game"
