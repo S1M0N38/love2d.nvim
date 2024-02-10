@@ -31,4 +31,5 @@ jobs:
           export VIM="${PWD}/_neovim/share/nvim/runtime"
           nvim --version
           love --version
-          xvfb-run -a -e  "/usr/bin/love" "tests/game"
+          which love
+          sudo xvfb-run -a -e  "/usr/bin/love" "tests/game"
