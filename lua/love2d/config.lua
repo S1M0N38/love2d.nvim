@@ -32,7 +32,6 @@ end
 ---@param opts? options: config table
 config.setup = function(opts)
   config.options = vim.tbl_deep_extend("force", {}, config.defaults, opts or {})
-
   if config.options.path_to_love_library ~= "" then
     local library_path = vim.fn.expand(config.options.path_to_love_library)
     if vim.fn.isdirectory(library_path) == 0 then

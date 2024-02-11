@@ -13,6 +13,10 @@ end
 ---Run a Love2D project
 ---@param path string: The path to the Love2D project
 love2d.run = function(path)
+  if love2d.job and love2d.job.id then
+    vim.notify("A LÖVE project is already running.", vim.log.levels.WARN)
+    return
+  end
   love2d.job = {} -- reset job
   vim.notify("Running LÖVE project at " .. path)
   local cmd = require("love2d.config").options.path_to_love .. " " .. path
