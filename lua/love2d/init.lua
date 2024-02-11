@@ -4,6 +4,23 @@ local love2d = {}
 ---@field id number: job-id returned by vim.fn.jobstart
 ---@field exit_code number: exit-code intercepted by on_exit callback
 
+---Find a valid path to the Love2D project
+---@param path string: The path to the Love2D project. If "" search for it.
+---@return string?: The path to the Love2D project. nil if not found
+love2d.find_src_path = function(path)
+  local main
+  if path == "" then
+    main = vim.fn.findfile("main.lua", ".;")
+  else
+    main = vim.fn.findfile("main.lua", path)
+  end
+  if main == "" then
+    vim.notify("No main.lua file found", vim.log.levels.ERROR)
+    return
+  end
+  return vim.fn.fnamemodify(main, ":h")
+end
+
 ---Initialize Love2D with options
 ---@param opts options: The options to initialize Love2D with
 love2d.setup = function(opts)
