@@ -3,7 +3,7 @@
 TESTS_DIR := tests/
 PLUGIN_DIR := lua/
 
-MINIMAL_INIT := ./scripts/minimal_init.vim
+MINIMAL_INIT := ./tests/minimal_init.lua
 
 test:
 	nvim --headless --noplugin -u ${MINIMAL_INIT} \
