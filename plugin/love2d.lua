@@ -3,6 +3,8 @@ vim.api.nvim_create_user_command("LoveRun", function(args)
   local path = love2d.find_src_path(args.args)
   if path then
     love2d.run(path)
+  else
+    vim.notify("No main.lua file found", vim.log.levels.ERROR)
   end
 end, { nargs = "?", complete = "dir" })
 

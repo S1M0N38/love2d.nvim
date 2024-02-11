@@ -15,7 +15,6 @@ love2d.find_src_path = function(path)
     main = vim.fn.findfile("main.lua", path)
   end
   if main == "" then
-    vim.notify("No main.lua file found", vim.log.levels.ERROR)
     return
   end
   return vim.fn.fnamemodify(main, ":h")
