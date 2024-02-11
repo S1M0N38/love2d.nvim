@@ -59,3 +59,26 @@ describe("love2d platform", function()
     assert.equal(0, love2d.job.exit_code)
   end)
 end)
+
+describe("love2d LSP", function()
+  it("avoids configuration", function()
+    opts.path_to_love_library = ""
+    vim.cmd("e tests/game/main.lua")
+    vim.wait(1000) -- wait for LSP to load
+    love2d.setup(opts)
+    vim.wait(2000) -- wait for love workspce to load
+    vim.lsp.buf.workspace_symbol("love.math")
+    vim.wait(1000) -- wait for workspace query to return
+    assert.True(#vim.fn.getqflist() == 0)
+  end)
+  it("configures", function()
+    opts.path_to_love_library = nil
+    vim.cmd("e tests/game/main.lua")
+    vim.wait(1000) -- wait for LSP to load
+    love2d.setup(opts)
+    vim.wait(2000) -- wait for love workspce to load
+    vim.lsp.buf.workspace_symbol("love.math")
+    vim.wait(1000) -- wait for workspace query to return
+    assert.True(#vim.fn.getqflist() > 0)
+  end)
+end)
