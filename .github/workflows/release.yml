@@ -18,12 +18,8 @@ jobs:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
           detailed_description: |
-            A simple way to kickstart your Neovim plugin development like a pro with:
-            - Plugin Structure
-            - Tests
-            - Docs Generation
-            - Linting and Formatting
-            - Deployment
+            A simple Neovim plugin to build game with LÖVE.
+            Read the documentation with `:help love2d`.
           dependencies: |
             plenary.nvim
           copy_directories: |
