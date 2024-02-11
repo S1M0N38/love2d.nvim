@@ -58,6 +58,18 @@ describe("love2d platform", function()
     assert.equal(nil, love2d.job.id)
     assert.equal(0, love2d.job.exit_code)
   end)
+  it("does not start twice", function()
+    love2d.setup(opts)
+    love2d.run("tests/game")
+    vim.wait(1000)
+    local old_job_id = love2d.job.id
+    love2d.run("tests/game")
+    vim.wait(1000)
+    local new_job_id = love2d.job.id
+    love2d.stop()
+    vim.wait(500)
+    assert.equal(new_job_id, old_job_id)
+  end)
 end)
 
 describe("love2d LSP", function()
