@@ -33,9 +33,9 @@ end
 config.setup = function(opts)
   config.options = vim.tbl_deep_extend("force", {}, config.defaults, opts or {})
   if config.options.path_to_love_library ~= "" then
-    local library_path = vim.fn.expand(config.options.path_to_love_library)
+    local library_path = vim.fn.split(vim.fn.expand(config.options.path_to_love_library), "\n")[1]
     if vim.fn.isdirectory(library_path) == 0 then
-      vim.notify("The library path does not exist.", vim.log.levels.ERROR)
+      vim.notify("The library path " .. library_path .. " does not exist.", vim.log.levels.ERROR)
       return
     end
     setup_lsp(library_path)
