@@ -3,12 +3,12 @@ local love2d = require("love2d")
 local opts
 if vim.fn.has("mac") == 1 then
   opts = {
-    path_to_love = "/Applications/love.app/Contents/MacOS/love",
+    path_to_love_bin = "/Applications/love.app/Contents/MacOS/love",
     path_to_love_library = "",
   }
 elseif vim.fn.has("linux") == 1 then
   opts = {
-    path_to_love = "/usr/bin/love",
+    path_to_love_bin = "/usr/bin/love",
     path_to_love_library = "",
   }
 else
@@ -16,9 +16,9 @@ else
 end
 
 describe("love2d platform", function()
-  it("does not start with wrong path_to_love", function()
+  it("does not start with wrong path_to_love_bin", function()
     love2d.setup({
-      path_to_love = "this/path/does/not/exist/love",
+      path_to_love_bin = "this/path/does/not/exist/love",
       path_to_love_library = "",
     })
     love2d.run("tests/game")

@@ -1,13 +1,13 @@
 local config = {}
 
 config.defaults = {
-  path_to_love = "love",
+  path_to_love_bin = "love",
   path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
   restart_on_save = false,
 }
 
 ---@class options
----@field path_to_love? string: The path to the Love2D executable
+---@field path_to_love_bin? string: The path to the Love2D executable
 ---@field path_to_love_library? string: The path to the Love2D library. Set to "" to disable LSP
 ---@field restart_on_save? boolean: Restart Love2D when a file is saved
 config.options = {}
