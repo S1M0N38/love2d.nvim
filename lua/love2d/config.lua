@@ -2,7 +2,7 @@ local config = {}
 
 config.defaults = {
   path_to_love = "love",
-  path_to_love_library = vim.fn.expand("%:p:h:h:h") .. "/love2d/library",
+  path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
 }
 
 ---@class options
