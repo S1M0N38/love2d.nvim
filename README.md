@@ -4,6 +4,9 @@
   <a href="https://github.com/S1M0N38/love2d.nvim/releases">
     <img alt="Release" src="https://img.shields.io/github/v/release/S1M0N38/love2d.nvim?style=for-the-badge"/>
   </a>
+  <a href="https://luarocks.org/modules/S1M0N38/love2d.nvim">
+    <img alt="Release" src="https://img.shields.io/luarocks/v/S1M0N38/love2d.nvim?style=for-the-badge&color=5d2fbf"/>
+  </a>
 </p>
 
 ______________________________________________________________________
