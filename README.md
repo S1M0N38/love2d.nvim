@@ -10,11 +10,11 @@ ______________________________________________________________________
 
 ## 💡 Idea
 
-I want to experiment with [LÖVE](https://love2d.org/). After reading this [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) I've realized that it's not so easy to get started with LÖVE and Neovim. Maybe the trickest part is to get LSP working with LÖVE. It's just one line in the LSP but it's usually a very niche thing and I cannot find may examples about; moreover, the `${3rd}` libraries will be [deprecated](https://github.com/LuaLS/lua-language-server/discussions/1950#discussion-4900461) in favor of Addons.
+I wanted to experiment with [LÖVE](https://love2d.org/). After reading this [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and), I realized that it's not so easy to get started with LÖVE and Neovim. Perhaps the trickiest part is getting LSP to work with LÖVE. It's just one line in the LSP, but it's usually a very niche thing and I can't find many examples about it; moreover, the `${3rd}` libraries will be [deprecated](https://github.com/LuaLS/lua-language-server/discussions/1950#discussion-4900461) in favor of Addons.
 
-Start and stop the game directly from Neovim (with keybindings) it's also quite handy. So I decied to pack these functionalities (LSP LÖVE config and game start/stop) in a dead simple plugin (so simple that It can be barely consider a plugin).
+Being able to start and stop the game directly from Neovim (with keybindings) is also quite handy. So I decided to pack these functionalities (LSP LÖVE config and game start/stop) into a dead simple plugin (so simple that it can barely be considered a plugin).
 
-However I think that providing this simple codebase to explore can be a good introduction to Neovim plugins innter workings. People using LÖVE know Lua so the language barrier boils down to Neovim specific api.
+However, I believe that providing this simple codebase to explore can be a good introduction to the inner workings of Neovim plugins. People using LÖVE know Lua, so the language barrier boils down to the Neovim specific API.
 
 ## ⚡️ Requirements
 
@@ -40,16 +40,13 @@ However I think that providing this simple codebase to explore can be a good int
 
 ## 🚀 Usage
 
+Read the documentation with [`:help love2d`](https://github.com/S1M0N38/love2d.nvim/blob/main/doc/love2d.txt)
 
-<p align="center">
-  <em>
-    Read the documentation with <a href="https://github.com/S1M0N38/love2d.nvim/blob/main/doc/love2d.txt">`:help love2d`</a>
-  </em>
-</p>
+> Vim/Neovim plugins are usually shipped with :help documentation. Learning how to navigate it is a really valuable skill. If you are not familiar with it, start with `:help` and read the first 20 lines.
 
 
 ## 🙏 Acknowledgments
 
-<!-- TODO: Add acknowledgments -->
-
-This very README is a copycat of [lazy.nvim](https://github.com/folke/lazy.nvim) README.
+- [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and) for the idea
+- Lua Language Server [LÖVE addon](https://github.com/LuaCATS/love2d)
+- My Awesome Plugin [template](https://github.com/S1M0N38/my-awesome-plugin.nvim)
