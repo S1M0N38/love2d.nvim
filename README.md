@@ -2,10 +2,13 @@
 
 <p align="center">
   <a href="https://github.com/S1M0N38/love2d.nvim/releases">
-    <img alt="Release" src="https://img.shields.io/github/v/release/S1M0N38/love2d.nvim?style=for-the-badge"/>
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/S1M0N38/love2d.nvim?style=for-the-badge"/>
   </a>
   <a href="https://luarocks.org/modules/S1M0N38/love2d.nvim">
-    <img alt="Release" src="https://img.shields.io/luarocks/v/S1M0N38/love2d.nvim?style=for-the-badge&color=5d2fbf"/>
+    <img alt="LuaRocks release" src="https://img.shields.io/luarocks/v/S1M0N38/love2d.nvim?style=for-the-badge&color=5d2fbf"/>
+  </a>
+  <a href="https://www.reddit.com/r/neovim/comments/1aol6nt/love2dnvim">
+    <img alt="Reddit post" src="https://img.shields.io/badge/post-reddit?style=for-the-badge&label=Reddit&color=FF5700"/>
   </a>
 </p>
 
@@ -23,7 +26,7 @@ However, I believe that providing this simple codebase to explore can be a good 
 
 - Neovim >= **0.9**
 - [LÖVE](https://www.love2d.org/)
-- `lua_ls` configured with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) (optional)
+- [lua_ls](https://luals.github.io/) configured with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) (optional)
 
 ## 📦 Installation
 
