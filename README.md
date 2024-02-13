@@ -1,4 +1,4 @@
-<h1 align="center">💙 LÖVE 2D ❤️</h1>
+<h1 align="center">🩵 LÖVE 2D 🩷</h1>
 
 <p align="center">
   <a href="https://github.com/S1M0N38/love2d.nvim/releases">
