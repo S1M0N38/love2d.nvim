@@ -8,6 +8,7 @@ Table of contents:
 1. SETUP: Install and setup the plugin.                         |love2d-setup|
 2. COMMANDS: Commands provided by the plugin.                |love2d-commands|
 3. LSP: Explaining LSP support for LÖVE.                          |love2d-lsp|
+4. GLSL: Notes about GLSL and tree-sitter support.               |love2d-glsl|
 
 
 ================================================================================
@@ -112,6 +113,45 @@ add the `love` namespace to the LSP.
 
 For example, when placing the cursor over the `love` variable and pressing
 `K`, you should see the documentation for the `love` namespace.
+
+
+================================================================================
+GLSL                                                             *love2d-glsl*
+
+OpenGL Shading Language (GLSL) is a high-level shading language for writing
+shaders. Shaders are small programs which are run on the graphics card when
+drawing. See https://www.love2d.org/wiki/love.graphics.newShader section
+"Shader Language" for love2d specific aliases.
+
+This plugin adds additional queries for |treesitter| to support inline GLSL in
+specific places. For example when calling `love.graphics.newShader()`.
+
+For these queries to take effect you need to have `lua` and `glsl` parsers
+installed. Easiest way to do so is by using plugin `nvim-treesitter` from
+github https://github.com/nvim-treesitter/nvim-treesitter . After installing
+the plugin, you can run `:TSInstall lua glsl` to install parsers.
+
+Doing so will enable neovim to "understand" that string inside
+`love.graphics.newShader()` is not just a string, but a `glsl` code. And you
+will get:
+
+1. Syntax highlighting for inline shaders.
+2. If you have `Comment.nvim`, it will now properly comment inside shaders.
+3. Plugin `nvim-treesitter-textobjects`, now will work inside shaders.
+4. And any other plugin/feature that depends on treesitter.
+
+If parsers are installed and plugin is loaded you should see the code below
+properly highlighted! (you may have to execute |:edit| to refresh current file)
+
+>lua
+  love.graphics.newShader([[
+    vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
+    {
+        vec4 texturecolor = VideoTexel(texture_coords);
+        return texturecolor * color;
+    }
+  ]])
+<
 
 ==============================================================================
  vim:tw=78:ts=8:et:ft=help:norl:
