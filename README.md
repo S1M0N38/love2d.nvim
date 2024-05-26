@@ -37,9 +37,9 @@ However, I believe that providing this simple codebase to explore can be a good 
   cmd = "LoveRun",
   opts = { },
   keys = {
-    { "<leader>v", desc = "LÖVE" },
-    { "<leader>vv", "<cmd>LoveRun<cr>", desc = "Run LÖVE" },
-    { "<leader>vs", "<cmd>LoveStop<cr>", desc = "Stop LÖVE" },
+    { "<leader>v", ft = "lua", desc = "LÖVE" },
+    { "<leader>vv", "<cmd>LoveRun<cr>", ft = "lua", desc = "Run LÖVE" },
+    { "<leader>vs", "<cmd>LoveStop<cr>", ft = "lua", desc = "Stop LÖVE" },
   },
 }
 ```
@@ -49,7 +49,6 @@ However, I believe that providing this simple codebase to explore can be a good 
 Read the documentation with [`:help love2d`](https://github.com/S1M0N38/love2d.nvim/blob/main/doc/love2d.txt)
 
 > Vim/Neovim plugins are usually shipped with :help documentation. Learning how to navigate it is a really valuable skill. If you are not familiar with it, start with `:help` and read the first 20 lines.
-
 
 ## 🙏 Acknowledgments
 
