@@ -54,4 +54,4 @@ Read the documentation with [`:help love2d`](https://github.com/S1M0N38/love2d.n
 
 - [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and) for the idea
 - Lua Language Server [LÖVE addon](https://github.com/LuaCATS/love2d)
-- My Awesome Plugin [template](https://github.com/S1M0N38/my-awesome-plugin.nvim)
+- base.nvim [template](https://github.com/S1M0N38/my-awesome-plugin.nvim)
