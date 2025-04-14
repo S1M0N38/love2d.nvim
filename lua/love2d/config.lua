@@ -4,13 +4,14 @@ config.defaults = {
   path_to_love_bin = "love",
   path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
   restart_on_save = false,
-  nvim_term_buff = false
+  window_output = false
 }
 
 ---@class options
 ---@field path_to_love_bin? string: The path to the Love2D executable
 ---@field path_to_love_library? string: The path to the Love2D library. Set to "" to disable LSP
 ---@field restart_on_save? boolean: Restart Love2D when a file is saved
+---@field window_output? boolean: Create split window with Love2D terminal output
 config.options = {}
 
 ---Setup the LSP for love2d using lspconfig
