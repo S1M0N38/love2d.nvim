@@ -36,12 +36,70 @@ love2d.run = function(path)
   love2d.job = {} -- reset job
   vim.notify("Running LÖVE project at " .. path)
   local cmd = require("love2d.config").options.path_to_love_bin .. " " .. path
-  love2d.job.id = vim.fn.jobstart(cmd, {
+	local enable_nvim_term = require("love2d.config").options.nvim_term_buff
+
+	local _o = {
     on_exit = function(_, code)
       love2d.job.exit_code = code
       love2d.job.id = nil
     end,
-  })
+  }
+
+	if enable_nvim_term then
+
+		if not love2d.job.buf then
+			love2d.job.buf = vim.api.nvim_create_buf(true, true)
+
+
+			love2d.job.win = vim.api.nvim_open_win(love2d.job.buf, false,	{
+				split = "below",
+			})
+
+			love2d.job.chan = vim.api.nvim_open_term(love2d.job.buf, {})
+		end
+
+		vim.api.nvim_create_autocmd("BufWipeout", {
+			buffer = love2d.job.buf,
+			callback = function()
+				if love2d.job.id then
+					vim.fn.jobstop(love2d.job.id)
+				end
+				love2d.job.id = nil
+				love2d.job.chan = nil
+				love2d.job.buf = nil
+				love2d.job.win = nil
+			end
+		})
+
+
+		vim.bo[love2d.job.buf].filetype = 'terminal'
+		if vim.treesitter then
+			vim.treesitter.stop(love2d.job.buf)
+		end
+		vim.api.nvim_clear_autocmds({ buffer = love2d.job.buf })
+
+		_o.pty = true
+		_o.on_stdout = function(_, data)
+			if love2d.job.chan ~= nil and love2d.job.buf and vim.api.nvim_buf_is_valid(love2d.job.buf) and vim.api.nvim_buf_is_loaded(love2d.job.buf) then
+				pcall(vim.api.nvim_chan_send, love2d.job.chan, table.concat(data, "\n"))
+			end
+		end
+		_o.on_exit = function(_, code)
+			if love2d.job.chan ~= nil and love2d.job.buf and vim.api.nvim_buf_is_valid(love2d.job.buf) and vim.api.nvim_buf_is_loaded(love2d.job.buf) then
+				pcall(vim.api.nvim_chan_send, love2d.job.chan, '\r\n[Process exited with code: ' .. tostring(code) .. ']')
+			end
+			love2d.job.exit_code = code
+			if love2d.job.id then
+				vim.fn.jobstop(love2d.job.id)
+			end
+			love2d.job.id = nil
+			love2d.job.chan = nil
+			love2d.job.buf = nil
+			love2d.job.win = nil
+		end
+	end
+
+  love2d.job.id = vim.fn.jobstart(cmd, _o)
 end
 
 ---Stop the running project
