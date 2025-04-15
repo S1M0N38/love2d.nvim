@@ -1,0 +1,35 @@
+# nvim-neorocks/luarocks-tag-release
+#   GitHub workflow for automatically generating Luarocks releases from tags and running busted tests
+#   It use .github/workflow/.luarc.json as config file
+#   https://github.com/nvim-neorocks/luarocks-tag-release
+
+
+# NOTE: you need to create a LUAROCKS_API_KEY in order to publish your plugin on LuaRocks
+#  Follow https://github.com/nvim-neorocks/sample-luarocks-plugin
+
+name: Release LuaRocks
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  luarocks-release:
+    runs-on: ubuntu-latest
+    name: Luarocks Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        if: env.LUAROCKS_API_KEY != null
+      - name: Luarocks Upload
+        uses: nvim-neorocks/luarocks-tag-release@v7
+        if: env.LUAROCKS_API_KEY != null
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+        with:
+          detailed_description: |
+            A template for Neovim plugin
+          copy_directories: |
+            {{ neovim.plugin.dirs }}

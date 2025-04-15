@@ -1,0 +1,28 @@
+# googleapis/release-please-action
+#   Automated releases based on conventional commits
+#   https://github.com/googleapis/release-please-action
+
+# NOTE: you need to create a PAT (Personal Access Token) in order to publish your plugin on GitHub
+#  Follow https://github.com/nvim-neorocks/sample-luarocks-plugin
+
+name: Release GitHub
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.PAT }}
+          release-type: simple
