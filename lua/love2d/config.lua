@@ -4,7 +4,7 @@ config.defaults = {
   path_to_love_bin = "love",
   path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
   restart_on_save = false,
-  window_output = false
+  window_output = false,
 }
 
 ---@class options
