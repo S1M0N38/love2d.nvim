@@ -1,3 +1,6 @@
+-- This is required to live update the debug window using print for debug
+io.stdout:setvbuf("no")
+
 -- Create triangle mesh
 local attributes = {
   { "VertexPosition", "float", 2 },
