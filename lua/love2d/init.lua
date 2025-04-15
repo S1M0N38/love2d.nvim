@@ -32,11 +32,11 @@ local function enable_debug_window(job_opts, window_opts)
     end
 
     vim.api.nvim_win_set_buf(love2d.debug_window, love2d.job.buf)
-    vim.bo[love2d.job.buf].buftype = "nofile"
-    vim.bo[love2d.job.buf].bufhidden = "wipe"
-    vim.bo[love2d.job.buf].swapfile = false
-    vim.wo[love2d.debug_window].number = false
-    vim.wo[love2d.debug_window].relativenumber = false
+    vim.api.nvim_set_option_value("buftype", "nofile", { buf = love2d.job.buf })
+    vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = love2d.job.buf })
+    vim.api.nvim_set_option_value("swapfile", false, { buf = love2d.job.buf })
+    vim.api.nvim_set_option_value("number", false, { win = love2d.debug_window })
+    vim.api.nvim_set_option_value("relativenumber", false, { win = love2d.debug_window })
   end
 
   job_opts.on_stdout = function(_, data)
