@@ -15,15 +15,15 @@ local function enable_debug_window(job_opts, window_opts)
   if not love2d.job.buf then
     love2d.job.buf = vim.api.nvim_create_buf(false, true)
 
-    if not love2d.job.win then
-      love2d.job.win = vim.api.nvim_open_win(love2d.job.buf, false, window_opts)
+    if not love2d.debug_window then
+      love2d.debug_window = vim.api.nvim_open_win(love2d.job.buf, false, window_opts)
 
       vim.api.nvim_create_autocmd("WinClosed", {
         group = love2d.job.augroup,
         callback = function(args)
-          if args.match == tostring(love2d.job.win) then
+          if args.match == tostring(love2d.debug_window) then
             vim.api.nvim_buf_delete(love2d.job.buf, { force = true })
-            love2d.job.win = nil
+            love2d.debug_window = nil
             love2d.job.buf = nil
             return true
           end
@@ -31,12 +31,12 @@ local function enable_debug_window(job_opts, window_opts)
       })
     end
 
-    vim.api.nvim_win_set_buf(love2d.job.win, love2d.job.buf)
+    vim.api.nvim_win_set_buf(love2d.debug_window, love2d.job.buf)
     vim.bo[love2d.job.buf].buftype = "nofile"
     vim.bo[love2d.job.buf].bufhidden = "wipe"
     vim.bo[love2d.job.buf].swapfile = false
-    vim.wo[love2d.job.win].number = false
-    vim.wo[love2d.job.win].relativenumber = false
+    vim.wo[love2d.debug_window].number = false
+    vim.wo[love2d.debug_window].relativenumber = false
   end
 
   job_opts.on_stdout = function(_, data)
@@ -46,14 +46,6 @@ local function enable_debug_window(job_opts, window_opts)
       end, data)
       vim.api.nvim_buf_set_lines(love2d.job.buf, -1, -1, false, lines)
     end
-  end
-
-  job_opts.on_exit = function(_, code)
-    love2d.job.exit_code = code
-    if love2d.job.id then
-      vim.fn.jobstop(love2d.job.id)
-    end
-    love2d.job.id = nil
   end
 
   return job_opts
