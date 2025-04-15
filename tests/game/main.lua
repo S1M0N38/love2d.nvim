@@ -29,6 +29,17 @@ local shader = love.graphics.newShader(
   ]]
 )
 
+local printTimer = 0
+local printInterval = 1
+
+function love.update(dt)
+  printTimer = printTimer + dt
+  if printTimer >= printInterval then
+    print("One second has passed. Current timer value: " .. printTimer)
+    printTimer = printTimer - printInterval
+  end
+end
+
 function love.draw()
   love.graphics.setShader(shader)
   love.graphics.draw(triangle, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 0, 200, 200)
