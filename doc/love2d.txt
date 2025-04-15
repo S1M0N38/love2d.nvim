@@ -18,16 +18,16 @@ It's highly recommended to use a plugin manager to install love2d.nvim. For
 example, using `lazy.nvim`:
 
 >lua
-    {
-      "S1M0N38/love2d.nvim",
-      cmd = "LoveRun",
-      opts = { },
-      keys = {
-        { "<leader>v", desc = "LÖVE" },
-        { "<leader>vv", "<cmd>LoveRun<cr>", desc = "Run LÖVE" },
-        { "<leader>vs", "<cmd>LoveStop<cr>", desc = "Stop LÖVE" },
-      },
-    }
+  {
+    "S1M0N38/love2d.nvim",
+    cmd = "LoveRun",
+    opts = { },
+    keys = {
+      { "<leader>v", desc = "LÖVE" },
+      { "<leader>vv", "<cmd>LoveRun<cr>", desc = "Run LÖVE" },
+      { "<leader>vs", "<cmd>LoveStop<cr>", desc = "Stop LÖVE" },
+    },
+  }
 <
 
 Usually, in the installation example, the plugin author provides the bare
@@ -46,7 +46,7 @@ So with this configuration, when the command `:LoveRun` is called:
 3. The command `:LoveRun` is run. See |love2d-commands|.
 
 (If you are too lazy to run the `:LoveRun` command, you can use the keymap
-`<leader>vv`.)
+`<leader>vv`)
 
 
                                                               *love2d.setup()*
@@ -64,6 +64,7 @@ love2d.setup({opts}) ~
     path_to_love_bin = "love",
     path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
     restart_on_save = false,
+    debug_window_opts = nil,
   }
 <
 
@@ -79,6 +80,19 @@ love2d.setup({opts}) ~
   - `restart_on_save`: Restart the game using |love2d.stop()| and
     |love2d.run()| when you save a file in the game project.
 
+  - `debug_window_opts`: If set, a new window will be opened showing the
+    stdout of the running LÖVE project. This is useful for debugging using
+    `print()` statements. The value should be a table compatible with the
+    `opts` parameter of |nvim_open_win()|. For example, to open a split window
+    below the current one:
+
+>lua
+  {
+    debug_window_opts = {
+      split = "below",
+    }
+  }
+<
 
 ================================================================================
 COMMANDS                                                     *love2d-commands*
