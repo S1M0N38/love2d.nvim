@@ -37,8 +37,7 @@ However, I believe that providing this simple codebase to explore can be a good 
 -- using lazy.nvim
 {
   "S1M0N38/love2d.nvim",
-  event = 'VeryLazy',
-  cmd = "LoveRun",
+  event = "VeryLazy",
   opts = { },
   keys = {
     { "<leader>v", ft = "lua", desc = "LÖVE" },
