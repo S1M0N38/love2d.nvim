@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/S1M0N38/love2d.nvim/compare/v1.0.0...v1.0.1) (2025-04-16)
+
+
+### Bug Fixes
+
+* use VeryLazy event instead cmd ([#8](https://github.com/S1M0N38/love2d.nvim/issues/8)) ([c9ad2b6](https://github.com/S1M0N38/love2d.nvim/commit/c9ad2b61e5c433b45679b2f2b0ed4682fe2c6bd7))
+
 ## 1.0.0 (2025-04-15)
 
 
