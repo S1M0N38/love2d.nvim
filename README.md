@@ -12,7 +12,10 @@
   </a>
 </p>
 
-______________________________________________________________________
+---
+
+> [!NOTE]
+> No breaking changes were introduced in the upgrade from v0.2 to v1.0.0. The version v1.0.0 introduces the usage of [Semantic Versioning](https://semver.org/).
 
 ## 💡 Idea
 
