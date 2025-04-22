@@ -1,3 +1,6 @@
 [submodule "love2d"]
 	path = love2d
 	url = https://github.com/LuaCATS/love2d
+[submodule "luasocket"]
+	path = luasocket
+	url = https://github.com/LuaCATS/luasocket.git
