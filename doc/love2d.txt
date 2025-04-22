@@ -63,6 +63,7 @@ love2d.setup({opts}) ~
   {
     path_to_love_bin = "love",
     path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
+    path_to_luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket/library"),
     restart_on_save = false,
     debug_window_opts = nil,
   }
@@ -76,6 +77,10 @@ love2d.setup({opts}) ~
   - `path_to_love_library`: `love2d.nvim` provides a lua annotation library
     for `love` namespace, this is what makes LSP work with LÖVE. You can set
     this to `""` if you don't want LSP to automatically be setup.
+
+  - `path_to_luasocket_library`: Similar to `path_to_love_library`, this option
+    specifies the path to the `luasocket` library for LSP support. Set to `""`
+    to disable LuaSocket LSP setup.
 
   - `restart_on_save`: Restart the game using |love2d.stop()| and
     |love2d.run()| when you save a file in the game project.
