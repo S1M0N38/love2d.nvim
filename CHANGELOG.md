@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/S1M0N38/love2d.nvim/compare/v1.0.1...v1.1.0) (2025-06-28)
+
+
+### Features
+
+* **luasocket:** add luasocket annotations as git submodule ([875cda6](https://github.com/S1M0N38/love2d.nvim/commit/875cda62a21008ff5e2e2d0460b6f25a0c9b7e11))
+* **luasocket:** update config to accept luasocket lib path ([ab0fe6d](https://github.com/S1M0N38/love2d.nvim/commit/ab0fe6d8730a5dd0113e03ba524db53c2bc4cddd))
+
 ## [1.0.1](https://github.com/S1M0N38/love2d.nvim/compare/v1.0.0...v1.0.1) (2025-04-16)
 
 
