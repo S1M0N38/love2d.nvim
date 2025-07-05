@@ -20,29 +20,26 @@ config.options = {}
 ---@param love_library_path string: Path to the Love2D library
 ---@param luasocket_library_path? string: Path to the LuaSocket library
 local function setup_lsp(love_library_path, luasocket_library_path)
-  local lspconfig_installed, lspconfig = pcall(require, "lspconfig")
-  if lspconfig_installed then
-    -- Set up library configuration for lua_ls
-    local settings = {
-      Lua = {
-        workspace = { library = {} },
-      },
-    }
+  -- Set up library configuration for lua_ls
+  local settings = {
+    Lua = {
+      workspace = { library = {} },
+    },
+  }
 
-    -- Add Love2D library path
-    settings.Lua.workspace.library[love_library_path] = true
+  -- Add Love2D library path
+  settings.Lua.workspace.library[love_library_path] = true
 
-    -- Add LuaSocket library path if provided
-    if luasocket_library_path then
-      settings.Lua.workspace.library[luasocket_library_path] = true
-    end
-
-    lspconfig.lua_ls.setup({
-      settings = settings,
-    })
-  else
-    vim.notify("Install lspconfig to setup LSP for love2d", vim.log.levels.ERROR)
+  -- Add LuaSocket library path if provided
+  if luasocket_library_path then
+    settings.Lua.workspace.library[luasocket_library_path] = true
   end
+
+  vim.lsp.config('lua_ls', {
+    settings = settings,
+  })
+  vim.lsp.enable('lua_ls', false)
+  vim.lsp.enable('lua_ls', true)
 end
 
 ---Create auto commands for love2d:
@@ -90,7 +87,8 @@ config.setup = function(opts)
   if config.options.path_to_luasocket_library ~= "" then
     local luasocket_library_path = vim.fn.split(vim.fn.expand(config.options.path_to_luasocket_library), "\n")[1]
     if vim.fn.isdirectory(luasocket_library_path) == 0 then
-      vim.notify("The LuaSocket library path " .. luasocket_library_path .. " does not exist.", vim.log.levels.ERROR)
+      vim.notify("The LuaSocket library path " .. luasocket_library_path .. " does not exist.",
+        vim.log.levels.ERROR)
     else
       valid_luasocket_path = luasocket_library_path
     end
