@@ -16,24 +16,12 @@ config.defaults = {
 ---@field debug_window_opts? vim.api.keyset.win_config: Create split window with Love2D terminal output
 config.options = {}
 
----Setup the LSP for love2d using lspconfig
+---Setup the LSP for love2d using vim.lsp.config with proper merging
 ---@param love_library_path string: Path to the Love2D library
 ---@param luasocket_library_path? string: Path to the LuaSocket library
 local function setup_lsp(love_library_path, luasocket_library_path)
-  -- Check if lspconfig is available
-  local ok, lspconfig = pcall(require, 'lspconfig')
-  if not ok then
-    vim.notify("nvim-lspconfig is required for Love2D LSP setup", vim.log.levels.ERROR)
-    return
-  end
-
   -- Get current lua_ls configuration if it exists
-  local current_config = {}
-  if lspconfig.lua_ls.manager then
-    current_config = lspconfig.lua_ls.manager.config or {}
-  end
-
-  -- Merge existing settings with Love2D configuration
+  local current_config = vim.lsp.config.lua_ls or {}
   local existing_settings = current_config.settings or {}
   local existing_lua = existing_settings.Lua or {}
   local existing_workspace = existing_lua.workspace or {}
@@ -50,7 +38,7 @@ local function setup_lsp(love_library_path, luasocket_library_path)
     new_library[luasocket_library_path] = true
   end
 
-  -- Create the complete settings configuration
+  -- Create the complete settings configuration that merges with existing
   local settings = vim.tbl_deep_extend("force", existing_settings, {
     Lua = {
       runtime = {
@@ -63,8 +51,8 @@ local function setup_lsp(love_library_path, luasocket_library_path)
     },
   })
 
-  -- Use lspconfig instead of vim.lsp.config
-  lspconfig.lua_ls.setup({
+  -- Use vim.lsp.config with proper merging
+  vim.lsp.config("lua_ls", {
     settings = settings,
   })
 end
