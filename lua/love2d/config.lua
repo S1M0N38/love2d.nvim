@@ -6,7 +6,7 @@ config.defaults = {
   path_to_luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket/library"),
   restart_on_save = false,
   debug_window_opts = nil,
-  auto_setup_lsp = true,
+  identify_love_projects = true,
 }
 
 ---@class options
@@ -15,24 +15,23 @@ config.defaults = {
 ---@field path_to_luasocket_library? string: The path to the LuaSocket library. Set to "" to disable LuaSocket LSP
 ---@field restart_on_save? boolean: Restart Love2D when a file is saved
 ---@field debug_window_opts? vim.api.keyset.win_config: Create split window with Love2D terminal output
----@field auto_setup_lsp? boolean: Automatically setup LSP only in detected Love2D projects
+---@field identify_love_projects? boolean: Automatically setup LSP only in detected Love2D projects
 config.options = {}
 
 ---Detect if current directory is a Love2D project
 ---@return boolean: true if Love2D project detected
 local function is_love2d_project()
-  -- Check for common Love2D files
-  local love_files = { "main.lua", "conf.lua" }
-  for _, file in ipairs(love_files) do
-    if vim.fn.filereadable(file) == 1 then
-      return true
-    end
+  -- Check for common Love2D base file
+  if vim.fn.filereadable("main.lua") == 1 then
+    return true
   end
 
-  -- Check if main.lua contains love functions
-  if vim.fn.filereadable("main.lua") == 1 then
-    local main_content = vim.fn.readfile("main.lua")
-    for _, line in ipairs(main_content) do
+  -- Check if any Lua file contains a Love2D function call
+  local files = vim.fn.glob("*.lua", false, true)
+  for _, file in ipairs(files) do
+    local content = vim.fn.readfile(file)
+
+    for _, line in ipairs(content) do
       if line:match("love%.") then
         return true
       end
@@ -140,10 +139,12 @@ end
 
 ---Setup the love2d configuration.
 ---It must be called before running a love2d project.
+---
 ---@param opts? options: config table
 config.setup = function(opts)
   config.options = vim.tbl_deep_extend("force", {}, config.defaults, opts or {})
 
+  --- @type boolean
   local valid_love_path = nil
   local valid_luasocket_path = nil
 
@@ -165,14 +166,14 @@ config.setup = function(opts)
 
   -- Set up LSP if we have a valid Love2D library path
   if valid_love_path then
-    -- Check if auto_setup_lsp is enabled and if this is a Love2D project
-    if config.options.auto_setup_lsp then
+    -- Check if identify_love_projects is enabled and if this is a Love2D project
+    if config.options.identify_love_projects then
       if is_love2d_project() then
         vim.notify("Love2D project detected, setting up LSP...", vim.log.levels.INFO)
         setup_lsp(valid_love_path, valid_luasocket_path)
       else
         vim.notify(
-          "Love2D library available but no Love2D project detected. Use auto_setup_lsp = false to always setup LSP.",
+          "Love2D library available but no Love2D project detected. Use identify_love_projects = false to always setup LSP.",
           vim.log.levels.WARN
         )
       end

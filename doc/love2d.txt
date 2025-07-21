@@ -66,6 +66,7 @@ love2d.setup({opts}) ~
     path_to_luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket/library"),
     restart_on_save = false,
     debug_window_opts = nil,
+    identify_love_projects = true
   }
 <
 
@@ -97,6 +98,11 @@ love2d.setup({opts}) ~
       split = "below",
     }
   }
+
+  - identify_love_projects: When true (default), the plugin will only initialize the LSP if
+    it detects a LÖVE project—either by the presence of a main.lua at the project root 
+    or by scanning files for usage of love.* functions. When false, the LSP will 
+    always be initialized, regardless of whether the project is related to LÖVE.
 <
 
 ================================================================================
