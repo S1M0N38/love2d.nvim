@@ -2,47 +2,48 @@ local config = {}
 
 config.defaults = {
   path_to_love_bin = "love",
-  path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
-  path_to_luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket/library"),
   restart_on_save = false,
   debug_window_opts = nil,
 }
 
 ---@class options
 ---@field path_to_love_bin? string: The path to the Love2D executable
----@field path_to_love_library? string: The path to the Love2D library. Set to "" to disable LSP
----@field path_to_luasocket_library? string: The path to the LuaSocket library. Set to "" to disable LuaSocket LSP
 ---@field restart_on_save? boolean: Restart Love2D when a file is saved
----@field debug_window_opts? vim.api.keyset.win_config: Create split window with Love2D terminal output
+---@field debug_window_opts? table: Create split window with Love2D terminal output
 config.options = {}
 
----Setup the LSP for love2d using lspconfig
----@param love_library_path string: Path to the Love2D library
----@param luasocket_library_path? string: Path to the LuaSocket library
-local function setup_lsp(love_library_path, luasocket_library_path)
-  local lspconfig_installed, lspconfig = pcall(require, "lspconfig")
-  if lspconfig_installed then
-    -- Set up library configuration for lua_ls
-    local settings = {
-      Lua = {
-        workspace = { library = {} },
-      },
-    }
+---Setup the LSP for love2d using vim.lsp.config with proper merging
+local function setup_lsp()
+  vim.notify("Setting up LÖVE LSP...", vim.log.levels.INFO)
 
-    -- Add Love2D library path
-    settings.Lua.workspace.library[love_library_path] = true
+  local settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" }, -- LuaJIT 2.1 == Lua 5.1 semantics
+      workspace = { checkThirdParty = false },
+    },
+  }
 
-    -- Add LuaSocket library path if provided
-    if luasocket_library_path then
-      settings.Lua.workspace.library[luasocket_library_path] = true
-    end
-
-    lspconfig.lua_ls.setup({
-      settings = settings,
-    })
-  else
-    vim.notify("Install lspconfig to setup LSP for love2d", vim.log.levels.ERROR)
+  if vim.lsp.config.lua_ls then
+    settings = vim.tbl_deep_extend("force", vim.lsp.config.lua_ls.settings or {}, settings)
   end
+
+  -- Merge with existing libraries (vim.tbl_deep_extend doesn't work on lists)
+  local libraries = {}
+  if vim.lsp.config.lua_ls and vim.lsp.config.lua_ls.settings and vim.lsp.config.lua_ls.settings.Lua.workspace then
+    libraries = vim.lsp.config.lua_ls.settings.Lua.workspace.library or {}
+  end
+  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "love2d"))
+  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "luasocket"))
+
+  ---@diagnostic disable-next-line: undefined-field
+  settings.Lua.workspace.library = libraries
+
+  -- Apply settings
+  vim.lsp.config("lua_ls", { settings = settings })
+
+  -- Restart lua_ls
+  vim.lsp.enable({ "lua_ls" }, false)
+  vim.lsp.enable({ "lua_ls" })
 end
 
 ---Create auto commands for love2d:
@@ -72,36 +73,12 @@ end
 ---@param opts? options: config table
 config.setup = function(opts)
   config.options = vim.tbl_deep_extend("force", {}, config.defaults, opts or {})
-
-  local valid_love_path = nil
-  local valid_luasocket_path = nil
-
-  -- Process Love2D library path
-  if config.options.path_to_love_library ~= "" then
-    local love_library_path = vim.fn.split(vim.fn.expand(config.options.path_to_love_library), "\n")[1]
-    if vim.fn.isdirectory(love_library_path) == 0 then
-      vim.notify("The library path " .. love_library_path .. " does not exist.", vim.log.levels.ERROR)
-    else
-      valid_love_path = love_library_path
-    end
+  local love2d = require("love2d")
+  if love2d.is_love2d_project() then
+    vim.notify("Love2D project detected, enabling love2d.nvim", vim.log.levels.INFO)
+    setup_lsp()
+    create_auto_commands()
   end
-
-  -- Process LuaSocket library path
-  if config.options.path_to_luasocket_library ~= "" then
-    local luasocket_library_path = vim.fn.split(vim.fn.expand(config.options.path_to_luasocket_library), "\n")[1]
-    if vim.fn.isdirectory(luasocket_library_path) == 0 then
-      vim.notify("The LuaSocket library path " .. luasocket_library_path .. " does not exist.", vim.log.levels.ERROR)
-    else
-      valid_luasocket_path = luasocket_library_path
-    end
-  end
-
-  -- Set up LSP if we have a valid Love2D library path
-  if valid_love_path then
-    setup_lsp(valid_love_path, valid_luasocket_path)
-  end
-
-  create_auto_commands()
 end
 
 return config

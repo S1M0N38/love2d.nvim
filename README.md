@@ -14,12 +14,12 @@
 
 ---
 
-> [!NOTE]
-> No breaking changes were introduced in the upgrade from v0.2 to v1.0.0. The version v1.0.0 introduces the usage of [Semantic Versioning](https://semver.org/).
+> [!IMPORTANT]
+> Version 2.0.0 introduces breaking changes. If you want to keep using the previous version, just pin the plugin to `1.*`.
 
 ## 💡 Idea
 
-I wanted to experiment with [LÖVE](https://love2d.org/). After reading this [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and), I realized that it's not so easy to get started with LÖVE and Neovim. Perhaps the trickiest part is getting LSP to work with LÖVE. It's just one line in the LSP, but it's usually a very niche thing and I can't find many examples about it; moreover, the `${3rd}` libraries will be [deprecated](https://github.com/LuaLS/lua-language-server/discussions/1950#discussion-4900461) in favor of Addons.
+I wanted to experiment with [LÖVE](https://love2d.org/). After reading this [Reddit post](https://www.reddit.com/r/neovim/comments/1727alu/anyone_actively_using_love2d_with_neovim_and), I realized that it's not so easy to get started with LÖVE and Neovim. Perhaps the trickiest part is getting LSP to work with LÖVE. It's just one line in the LSP configuration, but it's usually a very niche thing and I can't find many examples about it. Moreover, the `${3rd}` libraries will be [deprecated](https://github.com/LuaLS/lua-language-server/discussions/1950#discussion-4900461) in favor of Addons.
 
 Being able to start and stop the game directly from Neovim (with keybindings) is also quite handy. So I decided to pack these functionalities (LSP LÖVE config and game start/stop) into a dead simple plugin (so simple that it can barely be considered a plugin).
 
@@ -27,9 +27,11 @@ However, I believe that providing this simple codebase to explore can be a good 
 
 ## ⚡️ Requirements
 
-- Neovim >= **0.9**
+- Neovim >= **0.11**
 - [LÖVE](https://www.love2d.org/)
-- [lua_ls](https://luals.github.io/) configured with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) (optional)
+- [lua_ls](https://luals.github.io/), configured with
+  - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) or
+  - using Neovim LSP built-in functions
 
 ## 📦 Installation
 
@@ -38,6 +40,7 @@ However, I believe that providing this simple codebase to explore can be a good 
 {
   "S1M0N38/love2d.nvim",
   event = "VeryLazy",
+  version = "2.*",
   opts = { },
   keys = {
     { "<leader>v", ft = "lua", desc = "LÖVE" },
