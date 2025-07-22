@@ -62,8 +62,6 @@ love2d.setup({opts}) ~
 >lua
   {
     path_to_love_bin = "love",
-    path_to_love_library = vim.fn.globpath(vim.o.runtimepath, "love2d/library"),
-    path_to_luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket/library"),
     restart_on_save = false,
     debug_window_opts = nil,
     identify_love_projects = true
@@ -74,14 +72,6 @@ love2d.setup({opts}) ~
     binary in your `PATH` you can leave this option empty. If you are using
     MacOS, you can add `love.app` to your `/Applications` and then set to
     `"/Applications/love.app/Contents/MacOS/love"`
-
-  - `path_to_love_library`: `love2d.nvim` provides a lua annotation library
-    for `love` namespace, this is what makes LSP work with LÖVE. You can set
-    this to `""` if you don't want LSP to automatically be setup.
-
-  - `path_to_luasocket_library`: Similar to `path_to_love_library`, this option
-    specifies the path to the `luasocket` library for LSP support. Set to `""`
-    to disable LuaSocket LSP setup.
 
   - `restart_on_save`: Restart the game using |love2d.stop()| and
     |love2d.run()| when you save a file in the game project.
@@ -98,12 +88,16 @@ love2d.setup({opts}) ~
       split = "below",
     }
   }
-
-  - identify_love_projects: When true (default), the plugin will only initialize the LSP if
-    it detects a LÖVE project—either by the presence of a main.lua at the project root 
-    or by scanning files for usage of love.* functions. When false, the LSP will 
-    always be initialized, regardless of whether the project is related to LÖVE.
 <
+
+  - `identify_love_projects`: When true (default), the plugin will only
+    initialize LSP support if it detects a LÖVE project. Detection works by
+    checking for a `main.lua` file in the current directory or by scanning
+    `*.lua` files for usage of `love.*` functions. When false, LSP support
+    will always be initialized regardless of project type.
+
+  The plugin automatically provides LÖVE and LuaSocket library definitions
+  for LSP support - no manual library path configuration is required.
 
 ================================================================================
 COMMANDS                                                     *love2d-commands*
@@ -132,9 +126,14 @@ Language Server Protocol (LSP) is the way to provide code completion, linting,
 formatting, and other language-specific features to your editor. So it
 effectively makes your editor smarter, enhancing your development experience.
 
-This plugin does not setup LSP for you, but if you already have `lua_ls`
-working using the `nvim-lspconfig` plugin, love2d.nvim will automatically
-add the `love` namespace to the LSP.
+This plugin automatically configures `lua_ls` for LÖVE development when a LÖVE
+project is detected. It uses Neovim's built-in LSP configuration system
+(`vim.lsp.config`) available in Neovim 0.11+. The plugin will:
+
+- Configure Lua 5.1/LuaJIT runtime settings appropriate for LÖVE
+- Add bundled LÖVE and LuaSocket library definitions to the workspace
+- Merge with any existing `lua_ls` configuration you may have
+- Only activate when `identify_love_projects` detects a LÖVE project
 
 For example, when placing the cursor over the `love` variable and pressing
 `K`, you should see the documentation for the `love` namespace.
@@ -152,9 +151,9 @@ This plugin adds additional queries for Treesitter to support inline GLSL in
 specific places. For example, when calling `love.graphics.newShader()`.
 
 For these queries to take effect, you need to have `lua` and `glsl` parsers
-installed. The easiest way to do so is by using the plugin `nvim-treesitter` from
-GitHub https://github.com/nvim-treesitter/nvim-treesitter. After installing
-the plugin, you can run `:TSInstall lua glsl` to install parsers.
+installed. The easiest way to do so is by using the plugin `nvim-treesitter`
+from GitHub https://github.com/nvim-treesitter/nvim-treesitter. After
+installing the plugin, you can run `:TSInstall lua glsl` to install parsers.
 
 Doing so will enable Neovim to "understand" that the string inside
 `love.graphics.newShader()` is not just a string, but `glsl` code. And you
@@ -165,8 +164,9 @@ will get:
 3. The plugin `nvim-treesitter-textobjects` will now work inside shaders.
 4. And any other plugin/feature that depends on Treesitter.
 
-If parsers are installed and the plugin is loaded, you should see the code below
-properly highlighted! (You may have to execute |:edit| to refresh the current file)
+If parsers are installed and the plugin is loaded, you should see the code
+below properly highlighted! (You may have to execute |:edit| to refresh the
+current file)
 
 >lua
   love.graphics.newShader([[
