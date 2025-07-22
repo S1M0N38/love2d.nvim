@@ -9,7 +9,7 @@ config.defaults = {
 ---@class options
 ---@field path_to_love_bin? string: The path to the Love2D executable
 ---@field restart_on_save? boolean: Restart Love2D when a file is saved
----@field debug_window_opts? vim.api.keyset.win_config: Create split window with Love2D terminal output
+---@field debug_window_opts? table: Create split window with Love2D terminal output
 config.options = {}
 
 ---Setup the LSP for love2d using vim.lsp.config with proper merging
