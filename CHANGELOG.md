@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.0.0](https://github.com/S1M0N38/love2d.nvim/compare/v1.1.0...v2.0.0) (2025-07-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove path_to_love_library and path_to_luasocket_library configuration options. The plugin now uses bundled library paths automatically for LSP setup.
+
+### Features
+
+* add repro.lua for reproducing issues ([dbbdd6d](https://github.com/S1M0N38/love2d.nvim/commit/dbbdd6d152127b2e7d06abb5b99c8b2c04e8b736))
+* adding optional improvements ([17331bc](https://github.com/S1M0N38/love2d.nvim/commit/17331bc541c5e1572d5634eb17117438bd53ab73))
+
+
+### Bug Fixes
+
+* **ci:** update command to install luacheck ([5f8957a](https://github.com/S1M0N38/love2d.nvim/commit/5f8957ace8b92dbfba4019e70b7d5fc4d4905ff7))
+* switching strategy ([7bc69b3](https://github.com/S1M0N38/love2d.nvim/commit/7bc69b3263f93e1f57be926f348b1d1d15d82bb7))
+* trying to make it work with lspconfig ([5c5d629](https://github.com/S1M0N38/love2d.nvim/commit/5c5d629386689024017ce1cc278ebf0978b7f0f0))
+* type for debug_window_opts ([e08d192](https://github.com/S1M0N38/love2d.nvim/commit/e08d192705944ff6f29e453036417a41cf3de17c))
+
+
+### Code Refactoring
+
+* remove manual library path configuration options ([1744488](https://github.com/S1M0N38/love2d.nvim/commit/1744488b0d2b76497340bc9904ef9ae5079a86f8))
+
 ## [1.1.0](https://github.com/S1M0N38/love2d.nvim/compare/v1.0.1...v1.1.0) (2025-06-28)
 
 
