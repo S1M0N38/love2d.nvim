@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pytest:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(basedpyright:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(luacheck:*)"
+    ],
+    "deny": [
+      "Edit(CHANGELOG.md)",
+      "MultiEdit(CHANGELOG.md)",
+      "Write(CHANGELOG.md)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "stylua lua spec"
+          },
+        ]
+      }
+    ]
+  }
+}
