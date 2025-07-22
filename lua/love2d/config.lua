@@ -173,7 +173,7 @@ config.setup = function(opts)
         setup_lsp(valid_love_path, valid_luasocket_path)
       else
         vim.notify(
-          "Love2D library available but no Love2D project detected. Use identify_love_projects = false to always setup LSP.",
+          string.format("No Love2D project detected. Use identify_love_projects = false to always setup LSP."),
           vim.log.levels.WARN
         )
       end
