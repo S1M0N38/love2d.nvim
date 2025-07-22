@@ -23,7 +23,7 @@
           {
             "type": "command",
             "command": "stylua lua spec"
-          },
+          }
         ]
       }
     ]
