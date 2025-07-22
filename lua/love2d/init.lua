@@ -109,4 +109,26 @@ love2d.stop = function()
   vim.fn.jobstop(love2d.job.id)
 end
 
+---Detect if current directory is a Love2D project
+---@return boolean: true if Love2D project detected
+love2d.is_love2d_project = function()
+  -- Check for common Love2D base file
+  if vim.fn.filereadable("main.lua") == 1 then
+    return true
+  end
+
+  -- Check if any Lua file contains a Love2D function call
+  local files = vim.fn.glob("*.lua", false, true)
+  for _, file in ipairs(files) do
+    local content = vim.fn.readfile(file)
+    for _, line in ipairs(content) do
+      if line:match("love%.") then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
 return love2d
