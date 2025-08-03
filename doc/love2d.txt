@@ -64,6 +64,7 @@ love2d.setup({opts}) ~
     path_to_love_bin = "love",
     restart_on_save = false,
     debug_window_opts = nil,
+    setup_makeprg = true,
     identify_love_projects = true
   }
 <
@@ -89,6 +90,11 @@ love2d.setup({opts}) ~
     }
   }
 <
+
+  - `setup_makeprg`: When true (default), automatically setup `makeprg` and
+    `errorformat` for LÖVE projects. This allows you to use `:make` to run
+    your LÖVE project and parse error messages to jump to the correct file
+    and line number when errors occur.
 
   - `identify_love_projects`: When true (default), the plugin will only
     initialize LSP support if it detects a LÖVE project. Detection works by
