@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/S1M0N38/love2d.nvim/compare/v2.0.0...v2.1.0) (2025-08-04)
+
+
+### Features
+
+* add makeprg and errorformat autocommand setup ([a93beb0](https://github.com/S1M0N38/love2d.nvim/commit/a93beb0bacae571f98b2252fb7dd4091eaacd835))
+
 ## [2.0.0](https://github.com/S1M0N38/love2d.nvim/compare/v1.1.0...v2.0.0) (2025-07-22)
 
 
