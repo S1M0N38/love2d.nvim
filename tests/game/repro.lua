@@ -34,6 +34,9 @@ require("lazy.minit").repro({
         -- restart love2d when a file is saved
         -- restart_on_save = false,
         --
+        -- setup makeprg and errorformat for :make command (default: true)
+        -- setup_makeprg = true,
+        --
         -- Open a right split window logging debug messages from love2d
         -- debug_window_opts = {
         --   split = "right",
