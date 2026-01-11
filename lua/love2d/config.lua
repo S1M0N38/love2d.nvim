@@ -14,38 +14,49 @@ config.defaults = {
 ---@field setup_makeprg? boolean: Setup makeprg and errorformat for Love2D projects
 config.options = {}
 
----Setup the LSP for love2d using vim.lsp.config with proper merging
+---Setup the LSP for love2d
+---Handles both already-running lua_ls clients and future instances
 local function setup_lsp()
-  vim.notify("Setting up LÖVE LSP...", vim.log.levels.INFO)
+  local love_library = vim.fn.globpath(vim.o.runtimepath, "love2d")
+  local luasocket_library = vim.fn.globpath(vim.o.runtimepath, "luasocket")
 
-  local settings = {
+  local new_settings = {
     Lua = {
       runtime = { version = "LuaJIT" }, -- LuaJIT 2.1 == Lua 5.1 semantics
-      workspace = { checkThirdParty = false },
+      workspace = {
+        checkThirdParty = false,
+        library = { love_library, luasocket_library },
+      },
     },
   }
 
-  if vim.lsp.config.lua_ls then
-    settings = vim.tbl_deep_extend("force", vim.lsp.config.lua_ls.settings or {}, settings)
+  -- 1. Update any already-running lua_ls clients (fixes kickstart/mason-lspconfig compatibility)
+  local clients = vim.lsp.get_clients({ name = "lua_ls" })
+  for _, client in ipairs(clients) do
+    local merged = vim.tbl_deep_extend("force", client.config.settings or {}, new_settings)
+    -- Merge libraries (preserve existing, add love2d/luasocket)
+    local existing_libs = (
+      client.config.settings
+      and client.config.settings.Lua
+      and client.config.settings.Lua.workspace
+      and client.config.settings.Lua.workspace.library
+    ) or {}
+    merged.Lua.workspace.library = vim.list_extend(vim.deepcopy(existing_libs), { love_library, luasocket_library })
+
+    client.config.settings = merged
+    client:notify("workspace/didChangeConfiguration", { settings = merged })
   end
 
-  -- Merge with existing libraries (vim.tbl_deep_extend doesn't work on lists)
-  local libraries = {}
-  if vim.lsp.config.lua_ls and vim.lsp.config.lua_ls.settings and vim.lsp.config.lua_ls.settings.Lua.workspace then
-    libraries = vim.lsp.config.lua_ls.settings.Lua.workspace.library or {}
-  end
-  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "love2d"))
-  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "luasocket"))
+  -- 2. Set up config for future lua_ls instances
+  local base_settings = (vim.lsp.config.lua_ls and vim.lsp.config.lua_ls.settings) or {}
+  local merged_settings = vim.tbl_deep_extend("force", base_settings, new_settings)
+  -- Merge libraries (preserve existing, add love2d/luasocket)
+  local existing_libs = (base_settings.Lua and base_settings.Lua.workspace and base_settings.Lua.workspace.library)
+    or {}
+  merged_settings.Lua.workspace.library =
+    vim.list_extend(vim.deepcopy(existing_libs), { love_library, luasocket_library })
 
-  ---@diagnostic disable-next-line: undefined-field
-  settings.Lua.workspace.library = libraries
-
-  -- Apply settings
-  vim.lsp.config("lua_ls", { settings = settings })
-
-  -- Restart lua_ls
-  vim.lsp.enable({ "lua_ls" }, false)
-  vim.lsp.enable({ "lua_ls" })
+  vim.lsp.config("lua_ls", { settings = merged_settings })
 end
 
 ---Setup makeprg and errorformat for Love2D projects
