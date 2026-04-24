@@ -61,6 +61,7 @@ love2d.setup({opts}) ~
 
 >lua
   {
+    lua_language_server_provider = "lua_ls",
     path_to_love_bin = "love",
     restart_on_save = false,
     debug_window_opts = nil,
@@ -68,6 +69,10 @@ love2d.setup({opts}) ~
     identify_love_projects = true
   }
 <
+
+  - `lua_language_server_provider`: Choose what language server that
+    love2d.nvim should configure for. (currently available language servers
+    are `lua_ls` and `emmylua_ls`)
 
   - `path_to_love_bin`: The path to the `love` binary. If you have the `love`
     binary in your `PATH` you can leave this option empty. If you are using
@@ -132,13 +137,14 @@ Language Server Protocol (LSP) is the way to provide code completion, linting,
 formatting, and other language-specific features to your editor. So it
 effectively makes your editor smarter, enhancing your development experience.
 
-This plugin automatically configures `lua_ls` for LÖVE development when a LÖVE
-project is detected. It uses Neovim's built-in LSP configuration system
-(`vim.lsp.config`) available in Neovim 0.11+. The plugin will:
+This plugin automatically configures `lua_ls` (or `emmylua_ls`) for LÖVE 
+development when a LÖVE project is detected. It uses Neovim's built-in LSP 
+configuration system (`vim.lsp.config`) available in Neovim 0.11+. 
+The plugin will:
 
 - Configure Lua 5.1/LuaJIT runtime settings appropriate for LÖVE
 - Add bundled LÖVE and LuaSocket library definitions to the workspace
-- Merge with any existing `lua_ls` configuration you may have
+- Merge with any existing `lua_ls` (or `emmylua_ls`) configuration you may have
 - Only activate when `identify_love_projects` detects a LÖVE project
 
 For example, when placing the cursor over the `love` variable and pressing

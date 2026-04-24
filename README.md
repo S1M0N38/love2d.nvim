@@ -29,7 +29,7 @@ However, I believe that providing this simple codebase to explore can be a good 
 
 - Neovim >= **0.11**
 - [LÖVE](https://www.love2d.org/)
-- [lua_ls](https://luals.github.io/), configured with
+- [lua_ls](https://luals.github.io/) or [emmylua_ls](https://github.com/EmmyLuaLs/emmylua-analyzer-rust), configured with
   - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) or
   - using Neovim LSP built-in functions
 
