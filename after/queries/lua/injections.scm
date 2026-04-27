@@ -1,7 +1,7 @@
 ;; extends
 
 ;; inject glsl for any string that starts `#pragma language glsl`
-(string 
+(string
   content: _ @injection.content
   (#lua-match? @injection.content "^%s*#pragma language glsl")
   (#set! injection.language "glsl"))
