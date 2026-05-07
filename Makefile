@@ -15,4 +15,4 @@ format:
 check: lint test
 
 dev:
-	nvim -u tests/game/repro.lua
+	cd tests/game && nvim -u repro.lua main.lua
