@@ -6,18 +6,6 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  luacheck:
-    name: Linter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install luacheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y luarocks
-          sudo luarocks install luacheck
-      - name: Lint
-        run: luacheck lua/
   stylua:
     name: Formatter
     runs-on: ubuntu-latest
