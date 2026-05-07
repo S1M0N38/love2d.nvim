@@ -1,5 +1,7 @@
 local love2d = {}
 
+love2d.did_setup = false
+
 ---@type Love2D.Job
 love2d.job = {}
 
@@ -69,6 +71,10 @@ end
 ---Initialize Love2D with options
 ---@param opts? Love2D.Config: The options to initialize Love2D with
 love2d.setup = function(opts)
+  if love2d.did_setup then
+    return vim.notify("love2d.nvim is already setup", vim.log.levels.WARN, { title = "love2d" })
+  end
+  love2d.did_setup = true
   require("love2d.config").setup(opts)
 end
 
