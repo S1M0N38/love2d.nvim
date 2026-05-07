@@ -7,11 +7,7 @@ config.defaults = {
   setup_makeprg = true,
 }
 
----@class options
----@field path_to_love_bin? string: The path to the Love2D executable
----@field restart_on_save? boolean: Restart Love2D when a file is saved
----@field debug_window_opts? table: Create split window with Love2D terminal output
----@field setup_makeprg? boolean: Setup makeprg and errorformat for Love2D projects
+---@type Love2D.Config
 config.options = {}
 
 ---Setup the LSP for love2d using vim.lsp.config with proper merging
@@ -97,7 +93,7 @@ end
 
 ---Setup the love2d configuration.
 ---It must be called before running a love2d project.
----@param opts? options: config table
+---@param opts? Love2D.Config config table
 config.setup = function(opts)
   config.options = vim.tbl_deep_extend("force", {}, config.defaults, opts or {})
   local love2d = require("love2d")
