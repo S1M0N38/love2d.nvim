@@ -4,21 +4,43 @@ load(vim.fn.system("curl -s https://raw.githubusercontent.com/folke/lazy.nvim/ma
 
 require("lazy.minit").repro({
   spec = {
-
-    -- Configure treesitter lua and glsl
+    -- Treesitter: auto-install glsl parser for LÖVE shader highlighting
+    -- Requires tree-sitter CLI: npm install -g tree-sitter-cli
     {
       "nvim-treesitter/nvim-treesitter",
-      build = ":TSUpdate",
-      config = function()
-        require("nvim-treesitter.configs").setup({
-          ensure_installed = { "glsl" },
-          auto_install = true,
+      branch = "main",
+      opts = {
+        ensure_installed = { "glsl" },
+      },
+      config = function(_, opts)
+        local TS = require("nvim-treesitter")
+        TS.setup(opts)
+
+        -- Install missing parsers (like LazyVim does)
+        local installed = TS.get_installed()
+        local missing = vim.tbl_filter(function(lang)
+          return not vim.tbl_contains(installed, lang)
+        end, opts.ensure_installed or {})
+        if #missing > 0 then
+          TS.install(missing, { summary = true })
+        end
+
+        -- Enable highlighting for current and future buffers
+        local group = vim.api.nvim_create_augroup("repro_treesitter", { clear = true })
+        vim.api.nvim_create_autocmd("FileType", {
+          group = group,
+          callback = function(ev)
+            pcall(vim.treesitter.start, ev.buf)
+          end,
         })
+        -- Also attach to already-open buffers
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.bo[buf].buflisted and vim.api.nvim_buf_is_loaded(buf) then
+            pcall(vim.treesitter.start, buf)
+          end
+        end
       end,
     },
-
-    -- NOTE: maybe you need to reload the buffer after first time installing
-    -- treesitter to make the syntax highlighting work
 
     -- Configuration for lua_ls
     { "neovim/nvim-lspconfig" },
@@ -34,8 +56,8 @@ require("lazy.minit").repro({
         -- restart love2d when a file is saved
         -- restart_on_save = false,
         --
-        -- setup makeprg and errorformat for :make command (default: true)
-        -- setup_makeprg = true,
+        -- setup compiler for :make command (default: true)
+        -- setup_compiler = true,
         --
         -- Open a right split window logging debug messages from love2d
         -- debug_window_opts = {
