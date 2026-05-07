@@ -1,8 +1,7 @@
 local love2d = {}
 
----@class job
----@field id number: job-id returned by vim.fn.jobstart
----@field exit_code number: exit-code intercepted by on_exit callback
+---@type Love2D.Job
+love2d.job = {}
 
 ---Options and Initializations for debug window
 ---@param job_opts table
@@ -68,7 +67,7 @@ love2d.find_src_path = function(path)
 end
 
 ---Initialize Love2D with options
----@param opts options: The options to initialize Love2D with
+---@param opts? Love2D.Config: The options to initialize Love2D with
 love2d.setup = function(opts)
   require("love2d.config").setup(opts)
 end
