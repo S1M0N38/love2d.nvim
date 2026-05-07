@@ -4,6 +4,10 @@ local love2d = require("love2d")
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.notify = function() end
 
+local function reset_setup()
+  love2d.did_setup = false
+end
+
 local opts
 if vim.fn.has("mac") == 1 then
   opts = {
@@ -18,6 +22,10 @@ else
 end
 
 describe("love2d platform", function()
+  before_each(function()
+    reset_setup()
+  end)
+
   it("does not start with wrong path_to_love_bin", function()
     love2d.setup({
       path_to_love_bin = "this/path/does/not/exist/love",
@@ -87,6 +95,10 @@ describe("love2d.find_src_path", function()
 end)
 
 describe("love2d.setup", function()
+  before_each(function()
+    reset_setup()
+  end)
+
   it("merges options with defaults", function()
     local config = require("love2d.config")
     local original_options = vim.deepcopy(config.options)
@@ -120,6 +132,10 @@ describe("love2d.setup", function()
 end)
 
 describe("love2d debug window", function()
+  before_each(function()
+    reset_setup()
+  end)
+
   after_each(function()
     -- Clean up any debug windows
     if love2d.debug_window and vim.api.nvim_win_is_valid(love2d.debug_window) then
@@ -215,6 +231,10 @@ describe("project detection", function()
 end)
 
 describe("restart_on_save functionality", function()
+  before_each(function()
+    reset_setup()
+  end)
+
   after_each(function()
     -- Clean up autocmds
     pcall(vim.api.nvim_del_augroup_by_name, "love2d_restart_on_save")
@@ -260,6 +280,10 @@ describe("restart_on_save functionality", function()
 end)
 
 describe("error handling and edge cases", function()
+  before_each(function()
+    reset_setup()
+  end)
+
   after_each(function()
     if love2d.job and love2d.job.id then
       love2d.stop()
