@@ -14,6 +14,10 @@
 ---@field path_to_love_bin? string Path to the LÖVE executable
 ---@field restart_on_save? boolean Restart LÖVE when a Lua file is saved
 ---@field debug_window_opts? table Window configuration for debug output split
----@field setup_makeprg? boolean Setup makeprg and errorformat for LÖVE projects
+
+-- lua/love2d/utils.lua --------------------------------------------------------
+
+---Shared utilities for love2d.nvim
+---@class Love2D.Utils
 
 -- TODO: Add Love2D.Plugin class when module organization stabilizes (V3 refactor)
