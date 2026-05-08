@@ -20,11 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: rhysd/action-setup-vim@v1
+      - id: setup-vim
+        uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
           version: stable
-      - uses: mrcjkb/lua-typecheck-action@v1.1.0
+      - name: Type Check Code Base
+        uses: mrcjkb/lua-typecheck-action@v1.1.0
+        env:
+          VIM: ${{ steps.setup-vim.outputs.vim-directory }}
         with:
           directories: lua/
           checklevel: Warning
