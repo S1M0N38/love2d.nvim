@@ -12,6 +12,9 @@
 > **This file is updated continuously during the refactor.** Always read it
 > fresh at the start of a session — do not rely on cached knowledge from a
 > previous session.
+>
+> The V3 work is on a dedicated branch with a **draft PR #22** on GitHub.
+> All V3 commits should target that branch, not `main`.
 
 ---
 
