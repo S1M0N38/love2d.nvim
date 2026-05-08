@@ -20,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
       - uses: mrcjkb/lua-typecheck-action@v1.1.0
         with:
           directories: lua/
