@@ -4,43 +4,66 @@ config.defaults = {
   path_to_love_bin = "love",
   restart_on_save = false,
   debug_window_opts = nil,
+  libraries = {
+    "https://github.com/LuaCATS/love2d",
+    "https://github.com/LuaCATS/luasocket",
+  },
 }
 
 ---@type Love2D.Config
 config.options = {}
 
----Setup the LSP for love2d using vim.lsp.config with proper merging
-local function setup_lsp()
-  vim.notify("Setting up LÖVE LSP...", vim.log.levels.INFO)
+---Derive plugin name from a git URL.
+---"https://github.com/LuaCATS/love2d" → "love2d"
+---@param url string
+---@return string
+local function repo_name(url)
+  return url:match("([^/]+)%.git$") or url:match("([^/]+)$")
+end
 
-  local settings = {
-    Lua = {
-      runtime = { version = "LuaJIT" }, -- LuaJIT 2.1 == Lua 5.1 semantics
-      workspace = { checkThirdParty = false },
+---Install LÖVE definition libraries via vim.pack and inject paths into lua_ls.
+local function setup_lsp_libraries()
+  local libs = config.options.libraries
+  if not libs or #libs == 0 then
+    return
+  end
+
+  -- Install libraries (vim.pack clones if needed, adds to runtimepath)
+  vim.pack.add(libs)
+
+  -- Preserve existing lua_ls library paths
+  local existing = {}
+  local cfg = vim.lsp.config.lua_ls
+  if
+    cfg
+    and cfg.settings
+    and cfg.settings.Lua
+    and cfg.settings.Lua.workspace
+    and cfg.settings.Lua.workspace.library
+  then
+    existing = vim.list_slice(cfg.settings.Lua.workspace.library)
+  end
+
+  -- Resolve installed paths from vim.pack
+  for _, url in ipairs(libs) do
+    local name = repo_name(url)
+    if name then
+      local packs = vim.pack.get({ name })
+      if packs and packs[1] and packs[1].path then
+        table.insert(existing, packs[1].path)
+      end
+    end
+  end
+
+  vim.lsp.config("lua_ls", {
+    settings = {
+      Lua = {
+        workspace = {
+          library = existing,
+        },
+      },
     },
-  }
-
-  if vim.lsp.config.lua_ls then
-    settings = vim.tbl_deep_extend("force", vim.lsp.config.lua_ls.settings or {}, settings)
-  end
-
-  -- Merge with existing libraries (vim.tbl_deep_extend doesn't work on lists)
-  local libraries = {}
-  if vim.lsp.config.lua_ls and vim.lsp.config.lua_ls.settings and vim.lsp.config.lua_ls.settings.Lua.workspace then
-    libraries = vim.lsp.config.lua_ls.settings.Lua.workspace.library or {}
-  end
-  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "love2d"))
-  table.insert(libraries, vim.fn.globpath(vim.o.runtimepath, "luasocket"))
-
-  ---@diagnostic disable-next-line: undefined-field
-  settings.Lua.workspace.library = libraries
-
-  -- Apply settings
-  vim.lsp.config("lua_ls", { settings = settings })
-
-  -- Restart lua_ls
-  vim.lsp.enable({ "lua_ls" }, false)
-  vim.lsp.enable({ "lua_ls" })
+  })
 end
 
 ---Create auto commands for love2d:
@@ -84,7 +107,8 @@ config.setup = function(opts)
   local love2d = require("love2d")
   if love2d.is_love2d_project() then
     vim.notify("Love2D project detected, enabling love2d.nvim", vim.log.levels.INFO)
-    setup_lsp()
+    setup_lsp_libraries()
+    vim.lsp.enable("lua_ls")
     create_auto_commands()
   end
 end
