@@ -87,6 +87,7 @@ This principle applies to:
 lua/love2d/
   init.lua          — Main module: setup(), run(), stop(), find_src_path()
   config.lua        — Options, LSP library injection, autocmds
+  utils.lua         — Shared utilities (is_love2d_project, notify)
   types.lua         — [Step 2] LuaCATS type definitions (@meta)
   health.lua        — [Step 4] :checkhealth love2d support
 
@@ -117,23 +118,22 @@ doc/love2d.txt      — Vimdoc help file
 | Option | Default | Description |
 |--------|---------|-------------|
 | `path_to_love_bin` | platform-specific | LÖVE executable path |
-| `identify_love_projects` | `true` | Auto-detect LÖVE projects |
 | `restart_on_save` | `false` | Auto-restart game on Lua file save |
 | `debug_window_opts` | `nil` | Debug window configuration |
-| `setup_compiler` | `true` | [Step 5] Auto-set compiler for lua buffers |
-| `disable_default_definitions` | `false` | [Step 7] Skip LÖVE/LuaSocket library injection |
+| `disable_default_definitions` | `false` | Skip LÖVE/LuaSocket library injection *(not yet implemented — Step 7)* |
 
 ### V3 architecture
 
 **Setup flow (after Step 3)**
 1. `love2d.setup(opts)` — guarded by `did_setup`, warns on double call
 2. `require("love2d.config").setup(opts)` — merges defaults, detects project
-3. If LÖVE project: inject LSP libraries, enable lua_ls, create autocmds
+3. If LÖVE project: `setup_lsp()` (injects libraries + configures lua_ls), create autocmds, set compiler
 
-**LSP integration (after Step 7)**
-- Static settings live in `lsp/lua_ls.lua` (file-based, Neovim auto-loads)
-- `config.lua` only handles workspace.library injection (gated by `disable_default_definitions`)
-- `vim.lsp.enable("lua_ls")` replaces imperative client startup
+**LSP integration (current — Step 7 pending)**
+- `config.lua` still uses imperative `setup_lsp()` with restart dance
+- `setup_lsp()` merges runtime/library settings and restarts lua_ls
+- After Step 7: static settings move to `lsp/lua_ls.lua`, only library injection stays in `config.lua`
+- After Step 7: `disable_default_definitions` option gates library path injection
 
 **Compiler plugin (after Step 5)**
 - `compiler/love.lua` sets `makeprg` and `errorformat`
@@ -193,8 +193,9 @@ spec/               — Busted test suite (deleted in Step 10)
 
 | Option | Notes |
 |--------|-------|
-| `setup_makeprg` | Renamed to `setup_compiler` in Step 5 |
-| `identify_love_projects` | Unchanged in V3 |
+| `setup_makeprg` | Removed in V3 — compiler is now always set for LÖVE projects |
+| `setup_compiler` | Removed in V3 — compiler is now always set for LÖVE projects |
+| `identify_love_projects` | Removed in V3 — project detection always runs, no toggle |
 | `path_to_love_bin` | Unchanged in V3 |
 | `restart_on_save` | Unchanged in V3 |
 | `debug_window_opts` | Unchanged in V3 |
