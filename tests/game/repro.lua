@@ -42,27 +42,20 @@ require("lazy.minit").repro({
       end,
     },
 
-    -- Configuration for lua_ls
-    { "neovim/nvim-lspconfig" },
-
-    -- love2d.nvim
+    -- Configure lua_ls command (settings come from lsp/lua_ls.lua)
     {
       "S1M0N38/love2d.nvim",
+      init = function()
+        vim.lsp.config("lua_ls", {
+          cmd = { "lua-language-server" },
+        })
+      end,
       -- dir = "~/Developer/love2d.nvim", -- if you want to use a local copy of love2d.nvim
       opts = {
-        -- configure the path to the love executable
         -- path_to_love_bin = "love",
-        --
-        -- restart love2d when a file is saved
         -- restart_on_save = false,
-        --
-        -- setup compiler for :make command (default: true)
-        -- setup_compiler = true,
-        --
-        -- Open a right split window logging debug messages from love2d
-        -- debug_window_opts = {
-        --   split = "right",
-        -- },
+        -- libraries = { "https://github.com/LuaCATS/love2d", "https://github.com/LuaCATS/luasocket" },
+        -- debug_window_opts = { split = "right" },
       },
     },
   },

@@ -43,6 +43,7 @@ describe("LSP functionality", function()
   end
 
   before_each(function()
+    love2d.did_setup = false
     cleanup_lsp()
   end)
 
