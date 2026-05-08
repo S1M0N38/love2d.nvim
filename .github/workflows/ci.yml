@@ -6,30 +6,30 @@ on:
     branches: [main]
 
 jobs:
-  format:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: JohnnyMorganz/stylua-action@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: "2.4.1"
-          args: --check lua/ spec/
-
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - id: setup-vim
-        uses: rhysd/action-setup-vim@v1
-        with:
-          neovim: true
-          version: stable
-      - name: Type Check Code Base
-        uses: mrcjkb/lua-typecheck-action@v1.1.0
-        env:
-          VIM: ${{ steps.setup-vim.outputs.vim-directory }}
-        with:
-          directories: lua/
-          checklevel: Warning
-          configpath: .luarc.json
+      - name: Install Neovim
+        run: |
+          curl -L https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-linux-x86_64.tar.gz | tar xz -C "$HOME"
+          echo "$HOME/nvim-linux-x86_64/bin" >> $GITHUB_PATH
+          echo "VIMRUNTIME=$HOME/nvim-linux-x86_64/share/nvim/runtime" >> "$GITHUB_ENV"
+      - name: Install lua-language-server
+        run: |
+          mkdir -p "$HOME/.local/share/lua-language-server"
+          curl -L https://github.com/LuaLS/lua-language-server/releases/download/3.18.2/lua-language-server-3.18.2-linux-x64.tar.gz | tar xz -C "$HOME/.local/share/lua-language-server"
+          echo "$HOME/.local/share/lua-language-server/bin" >> $GITHUB_PATH
+      - name: Install stylua
+        run: |
+          curl -L https://github.com/JohnnyMorganz/StyLua/releases/download/v2.4.1/stylua-linux-x86_64.zip -o /tmp/stylua.zip
+          unzip -o /tmp/stylua.zip -d "$HOME/.local/bin"
+      - name: Format check
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          stylua --check lua/ spec/
+      - name: Typecheck
+        run: |
+          export PATH="$HOME/.local/share/lua-language-server/bin:$PATH"
+          export VIMRUNTIME="$HOME/nvim-linux-x86_64/share/nvim/runtime"
+          lua-language-server --check_format=pretty --check lua/ --configpath="$GITHUB_WORKSPACE/.luarc.json" --checklevel=Warning

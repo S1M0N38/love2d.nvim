@@ -62,9 +62,10 @@ love2d.find_src_path = function(path)
   else
     main = vim.fn.findfile("main.lua", path)
   end
-  if main == "" then
+  if main == "" or type(main) ~= "string" then
     return
   end
+  ---@cast main string
   return vim.fn.fnamemodify(main, ":h")
 end
 
