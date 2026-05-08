@@ -4,7 +4,6 @@ config.defaults = {
   path_to_love_bin = "love",
   restart_on_save = false,
   debug_window_opts = nil,
-  setup_makeprg = true,
 }
 
 ---@type Love2D.Config
@@ -44,18 +43,6 @@ local function setup_lsp()
   vim.lsp.enable({ "lua_ls" })
 end
 
----Setup makeprg and errorformat for Love2D projects
-local function setup_makeprg_and_errorformat()
-  -- Set errorformat to parse Love2D error messages
-  vim.api.nvim_set_option_value(
-    "errorformat",
-    "Error:%*[^:]:\\ %f:%l:%m,Error:\\ %f:%l:%m,%f:%l:%m",
-    { scope = "local" }
-  )
-  -- Set makeprg to run Love2D on current directory
-  vim.api.nvim_set_option_value("makeprg", "love .", { scope = "local" })
-end
-
 ---Create auto commands for love2d:
 --- - Restart on save: Restart Love2D when a file is saved.
 local function create_auto_commands()
@@ -76,18 +63,16 @@ local function create_auto_commands()
     })
   end
 
-  if config.options.setup_makeprg then
-    vim.api.nvim_create_autocmd("FileType", {
-      group = vim.api.nvim_create_augroup("love2d_makeprg_setup", { clear = true }),
-      pattern = "lua",
-      callback = function()
-        local love2d = require("love2d")
-        if love2d.is_love2d_project() then
-          setup_makeprg_and_errorformat()
-        end
-      end,
-    })
-  end
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("love2d_compiler_setup", { clear = true }),
+    pattern = "lua",
+    callback = function()
+      local utils = require("love2d.utils")
+      if utils.is_love2d_project() then
+        vim.cmd.compiler("love")
+      end
+    end,
+  })
   -- add here other auto commands ...
 end
 
