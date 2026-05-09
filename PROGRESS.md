@@ -85,6 +85,7 @@ Commit: `ci: self-contained CI with Neovim types, no external actions`
 - [x] Verify: `make lint` passes
 
 Commit: `build(library): move type definition submodules to libraries/ directory`
+Additional commit: `fix(lsp): add cmd to lua_ls config so the server can start`
 
 ---
 
