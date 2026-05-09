@@ -24,7 +24,7 @@ local function setup_lsp_libraries()
   end
 
   -- Resolve submodule paths from runtimepath
-  local libs = { "love2d", "luasocket" }
+  local libs = { "libraries/love2d", "libraries/luasocket" }
   for _, name in ipairs(libs) do
     local path = vim.fn.globpath(vim.o.runtimepath, name, false, true)
     if path and path[1] then
