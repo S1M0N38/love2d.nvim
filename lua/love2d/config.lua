@@ -4,34 +4,13 @@ config.defaults = {
   path_to_love_bin = "love",
   restart_on_save = false,
   debug_window_opts = nil,
-  libraries = {
-    "https://github.com/LuaCATS/love2d",
-    "https://github.com/LuaCATS/luasocket",
-  },
 }
 
 ---@type Love2D.Config
 config.options = {}
 
----Derive plugin name from a git URL.
----"https://github.com/LuaCATS/love2d" → "love2d"
----@param url string
----@return string
-local function repo_name(url)
-  return url:match("([^/]+)%.git$") or url:match("([^/]+)$")
-end
-
----Install LÖVE definition libraries via vim.pack and inject paths into lua_ls.
+---Inject submodule library paths (love2d, luasocket) into lua_ls workspace.library.
 local function setup_lsp_libraries()
-  local libs = config.options.libraries
-  if not libs or #libs == 0 then
-    return
-  end
-
-  -- Install libraries (vim.pack clones if needed, adds to runtimepath)
-  vim.pack.add(libs)
-
-  -- Preserve existing lua_ls library paths
   local existing = {}
   local cfg = vim.lsp.config.lua_ls
   if
@@ -44,14 +23,12 @@ local function setup_lsp_libraries()
     existing = vim.list_slice(cfg.settings.Lua.workspace.library)
   end
 
-  -- Resolve installed paths from vim.pack
-  for _, url in ipairs(libs) do
-    local name = repo_name(url)
-    if name then
-      local packs = vim.pack.get({ name })
-      if packs and packs[1] and packs[1].path then
-        table.insert(existing, packs[1].path)
-      end
+  -- Resolve submodule paths from runtimepath
+  local libs = { "love2d", "luasocket" }
+  for _, name in ipairs(libs) do
+    local path = vim.fn.globpath(vim.o.runtimepath, name, false, true)
+    if path and path[1] then
+      table.insert(existing, path[1])
     end
   end
 
