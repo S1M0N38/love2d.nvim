@@ -32,15 +32,10 @@ local shader = love.graphics.newShader(
   ]]
 )
 
-local printTimer = 0
-local printInterval = 1
+local elapsed = 0
 
 function love.update(dt)
-  printTimer = printTimer + dt
-  if printTimer >= printInterval then
-    print("One second has passed. Current timer value: " .. printTimer)
-    printTimer = printTimer - printInterval
-  end
+  elapsed = elapsed + dt
 end
 
 function love.draw()
