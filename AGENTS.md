@@ -123,7 +123,6 @@ doc/love2d.txt      — Vimdoc help file
 | `path_to_love_bin` | platform-specific | LÖVE executable path |
 | `restart_on_save` | `false` | Auto-restart game on Lua file save |
 | `debug_window_opts` | `nil` | Debug window configuration |
-| `disable_default_definitions` | `false` | Skip LÖVE/LuaSocket library injection *(not yet implemented — Step 7)* |
 
 ### V3 architecture
 
@@ -133,10 +132,10 @@ doc/love2d.txt      — Vimdoc help file
 3. If LÖVE project: `setup_lsp()` (injects libraries + configures lua_ls), create autocmds, set compiler
 
 **LSP integration (current — Step 7 pending)**
-- `config.lua` still uses imperative `setup_lsp()` with restart dance
-- `setup_lsp()` merges runtime/library settings and restarts lua_ls
+- `config.lua` resolves submodule paths (`love2d/`, `luasocket/`) from runtimepath and injects into lua_ls `workspace.library`
+- No runtime installation — type definitions ship as git submodules
 - After Step 7: static settings move to `lsp/lua_ls.lua`, only library injection stays in `config.lua`
-- After Step 7: `disable_default_definitions` option gates library path injection
+- Users with custom definitions override via `after/lsp/lua_ls.lua` (Neovim's built-in config chain)
 
 **Compiler plugin (after Step 5)**
 - `compiler/love.lua` sets `makeprg` and `errorformat`

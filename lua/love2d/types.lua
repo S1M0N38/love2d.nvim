@@ -14,7 +14,6 @@
 ---@field path_to_love_bin? string Path to the LÖVE executable
 ---@field restart_on_save? boolean Restart LÖVE when a Lua file is saved
 ---@field debug_window_opts? table Window configuration for debug output split
----@field libraries? string[] Definition library URLs to install via vim.pack
 
 -- lua/love2d/utils.lua --------------------------------------------------------
 
