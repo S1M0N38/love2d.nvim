@@ -8,101 +8,67 @@ assignees: S1M0N38
 
 **Versions**
 
-- *OS* \[e.g. macOS 15.1\]
-- *Neovim* \[e.g. 0.11.2\]
-- *Plugin* \[e.g. 2.0.0\]
+- *OS* [e.g. macOS 26.4]
+- *Neovim* [e.g. 0.12.2]
+- *love2d.nvim* [e.g. 3.0.0]
+- *LÖVE* [e.g. 11.5]
 
 
-## Test with `minimal.lua`
+## Test with `repro.lua`
 
->[!IMPORTANT]
+> [!IMPORTANT]
 > Please do not skip this step. For most users, issues occur because of their Neovim configuration.
 
-1. Create the file `repro.lua` with the following content
+1. Create the file `repro.lua` with the following content:
 
 ```lua
----@diagnostic disable: missing-fields
-vim.env.LAZY_STDPATH = ".repro"
-load(vim.fn.system("curl -s https://raw.githubusercontent.com/folke/lazy.nvim/main/bootstrap.lua"))()
-
-require("lazy.minit").repro({
-  spec = {
-
-    -- Configure treesitter lua and glsl
-    {
-      "nvim-treesitter/nvim-treesitter",
-      build = ":TSUpdate",
-      config = function()
-        require("nvim-treesitter.configs").setup({
-          ensure_installed = { "glsl" },
-          auto_install = true,
-        })
-      end,
-    },
-
-    -- NOTE: maybe you need to reload the buffer after first time installing
-    -- treesitter to make the syntax highlighting work
-
-    -- Configuration for lua_ls
-    { "neovim/nvim-lspconfig" },
-
-    -- love2d.nvim
-    {
-      "S1M0N38/love2d.nvim",
-      -- dir = "~/Developer/love2d.nvim", -- if you want to use a local copy of love2d.nvim
-      opts = {
-        -- configure the path to the love executable
-        -- path_to_love_bin = "love",
-        --
-        -- restart love2d when a file is saved
-        -- restart_on_save = false,
-        --
-        -- setup makeprg and errorformat for :make command (default: true)
-        -- setup_makeprg = true,
-        --
-        -- Open a right split window logging debug messages from love2d
-        -- debug_window_opts = {
-        --   split = "right",
-        -- },
-      },
-    },
-  },
+-- repro.lua — Minimal config for reproducing love2d.nvim issues
+vim.pack.add({
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+  "https://github.com/S1M0N38/love2d.nvim",
 })
 
--- You should be able to
---  - run the command :LoveRun
---  - run the command :LoveStop
---  - see glsl string correctly highlighted
---  - hover (<S-k>) on love functions and see the documentation
+-- Configure LÖVE executable if not on $PATH
+-- vim.g.love2d_path_to_love_bin = "love"
+
+-- You should be able to:
+--   - Run :LoveRun / :LoveStop
+--   - See GLSL strings highlighted (run :TSInstall glsl)
+--   - Hover (<S-k>) on love functions and see documentation
 
 -- Add additional setup here ...
 ```
 
-
-2. Open your love2d `main.lua` using `repro.lua` as config:
+2. Open your LÖVE `main.lua` using `repro.lua` as config:
 
 ```
 nvim -u repro.lua main.lua
 ```
 
 > [!TIP]
-> Alternatively, you can clone this repository, navigate to the `tests/game` directory and run `nvim -u repro.lua main.lua`
+> Alternatively, you can clone this repository, navigate to the `tests/game` directory and run `make dev`.
 
 3. Reproduce the bug
 
-4. All the artifacts will be stored in the `.repro` directory, you can share them with us (e.g. logs, states, etc.)
+4. If relevant, share any logs or error messages (check `:messages`).
 
-## Describe the bug
+## Expected behavior
 
-A clear and concise description of what the bug is and the expected behavior.
+What did you expect to happen?
 
-## Reproduce the bug
+## Actual behavior
+
+What happened instead?
+
+## Steps to reproduce
 
 Write down the steps to reproduce the behavior:
 
-1. Go to '...'
-1. Click on '....'
-1. Scroll down to '....'
-1. See error
+1. Open a LÖVE project file
+2. Run `:LoveRun`
+3. Observe the error
+4. ...
 
-You can also include screenshot (simply drag and drop image or video in this text area)
+## Screenshots / Videos
+
+If applicable, add screenshots or recordings to help explain the problem. You can drag and drop images or videos directly into this text area.
