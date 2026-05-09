@@ -27,7 +27,7 @@ However, I believe that providing this simple codebase to explore can be a good 
 
 ## ⚡️ Requirements
 
-- Neovim >= **0.11**
+- Neovim >= **0.12.2**
 - [LÖVE](https://www.love2d.org/)
 - [lua_ls](https://luals.github.io/), configured with
   - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) or
