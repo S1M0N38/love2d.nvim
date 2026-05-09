@@ -13,14 +13,13 @@ config.options = {}
 local function setup_lsp_libraries()
   local existing = {}
   local cfg = vim.lsp.config.lua_ls
-  if
-    cfg
+  local library = cfg
     and cfg.settings
     and cfg.settings.Lua
     and cfg.settings.Lua.workspace
     and cfg.settings.Lua.workspace.library
-  then
-    existing = vim.list_slice(cfg.settings.Lua.workspace.library)
+  if library then
+    existing = vim.list_slice(library)
   end
 
   -- Resolve submodule paths from runtimepath
@@ -44,7 +43,8 @@ local function setup_lsp_libraries()
 end
 
 ---Create auto commands for love2d:
---- - Restart on save: Restart Love2D when a file is saved.
+--- - Restart on save: restart the LÖVE project when a Lua file is saved
+--- - Compiler: activate the `love` compiler for Lua buffers in LÖVE projects
 local function create_auto_commands()
   if config.options.restart_on_save then
     vim.api.nvim_create_autocmd("BufWritePost", {
@@ -84,7 +84,6 @@ local function create_auto_commands()
       break -- compiler is buffer-local but we only need to set it once
     end
   end
-  -- add here other auto commands ...
 end
 
 ---Setup the love2d configuration.
