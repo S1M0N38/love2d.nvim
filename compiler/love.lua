@@ -20,7 +20,7 @@ vim.bo.makeprg = love_bin .. " ."
 -- NOTE: For `:make` to complete on error, your conf.lua must override
 -- love.errorhandler to exit immediately. See :help love2d-compiler.
 local efm = {
-  "%f:%l: %trror: %m", -- file:line: error: message
+  "%f:%l:\ %trror:\ %m", -- file:line: error: message
   "%-G%.%#", -- discard everything else
 }
 vim.bo.errorformat = table.concat(efm, ",")
