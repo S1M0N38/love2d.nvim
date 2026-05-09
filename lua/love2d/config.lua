@@ -63,16 +63,27 @@ local function create_auto_commands()
     })
   end
 
+  local utils = require("love2d.utils")
+
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("love2d_compiler_setup", { clear = true }),
     pattern = "lua",
     callback = function()
-      local utils = require("love2d.utils")
       if utils.is_love2d_project() then
         vim.cmd.compiler("love")
       end
     end,
   })
+
+  -- Set compiler for lua buffers that were already opened before setup()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].filetype == "lua" and vim.api.nvim_buf_is_loaded(buf) then
+      if utils.is_love2d_project() then
+        vim.cmd.compiler("love")
+      end
+      break -- compiler is buffer-local but we only need to set it once
+    end
+  end
   -- add here other auto commands ...
 end
 
