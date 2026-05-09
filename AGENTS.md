@@ -1,27 +1,22 @@
-# CLAUDE.md — love2d.nvim
+# AGENTS.md — love2d.nvim
 
 > ## ⚠️ V3 REFACTOR IN PROGRESS
 >
 > This plugin is undergoing a **major refactor** (V3). The codebase is in a
-> transitional state — some modules have been updated to the new architecture,
-> others are still legacy V2 code. **Do not assume everything is consistent.**
+> transitional state — some modules reflect the new architecture, others are
+> still interim. **Do not assume everything is consistent.**
 >
-> If something seems broken or contradictory, check [PROGRESS.md](PROGRESS.md)
-> to see which steps have been completed.
+> Check [PROGRESS.md](PROGRESS.md) to see which steps have been completed.
 >
 > **This file is updated continuously during the refactor.** Always read it
-> fresh at the start of a session — do not rely on cached knowledge from a
-> previous session.
+> fresh at the start of a session — do not rely on cached knowledge.
 >
-> The V3 work is on a dedicated branch with a **draft PR #22** on GitHub.
-> All V3 commits should target that branch, not `main`.
+> The V3 work is on a **dedicated branch** (`v3`) with a **draft PR #22** on
+> GitHub. All V3 commits should target that branch, not `main`.
 
 ---
 
 ## Reference documents
-
-These files guide the refactor. Read them when you need context on what's
-changing and why.
 
 | File | Purpose |
 |------|---------|
@@ -30,8 +25,8 @@ changing and why.
 | [PROGRESS.md](PROGRESS.md) | Checkbox tracker — which steps are done |
 | [AGENTS.md](AGENTS.md) | **This file** — current state of the codebase |
 
-When in doubt about the refactor: **V3-impl.md** is the source of truth for
-what should happen. **PROGRESS.md** tells you where we actually are.
+When in doubt: **V3-impl.md** is the source of truth for what should happen.
+**PROGRESS.md** tells you where we actually are.
 
 ---
 
@@ -40,181 +35,178 @@ what should happen. **PROGRESS.md** tells you where we actually are.
 `love2d.nvim` is a Neovim plugin that provides LSP integration, game execution
 controls, and enhanced developer workflow for LÖVE 2D game projects.
 
+**Philosophy**: Focused but complete. LSP + run/stop + compiler + project
+detection + health checks. No scope creep beyond this.
+
+**Audience**: Both LÖVE developers new to Neovim AND Neovim users trying LÖVE.
+Zero-config experience after `setup()` is the goal.
+
 ### Target environment: bare-bone Neovim only
 
 This plugin targets **stock Neovim** with no distribution or framework. It must
 work perfectly with a minimal `init.lua` and Neovim's built-in plugin/package
-management (`vim.pack`, `:packadd`, etc.).
+management.
 
 **Do not** spend effort on compatibility with Neovim distributions or starter
-templates (LazyVim, kickstart, NvChad, AstroNvim, MiniNvim, etc.). If a bug
-only reproduces inside a distribution, it is that distribution's responsibility.
+templates (LazyVim, kickstart, NvChad, etc.). If a bug only reproduces inside a
+distribution, it is that distribution's responsibility.
 
-This principle applies to:
-- Installation instructions (vim.pack and manual `opt` only — no lazy.nvim-specific `opts` tables)
-- LSP configuration (use `vim.lsp.config` / `vim.lsp.enable` — no lspconfig wrapper)
-- Testing (`nvim -l tests/minit.lua` — no test runner that depends on a plugin manager)
-- Documentation (vimdoc and README should not mention distributions)
+---
+
+## Development commands
+
+| Command | Notes |
+|---------|-------|
+| `make lint` | Stylua check (currently `lua/ spec/`) |
+| `make test` | Run e2e tests (temporary, will become mini.test) |
+| `make format` | Auto-format with stylua |
+| `make check` | lint + test |
+| `make dev` | Open Neovim with sample LÖVE project |
+| `make clean` | Remove `.repro` directories |
 
 ---
 
 ## V3 — Current State
 
 > This section describes the codebase **as it is right now**, reflecting
-> completed refactor steps. It grows as steps are completed.
+> completed refactor steps.
 
-### Refactor principles (from V3-impl.md)
+### Refactor principles
 
-1. **Source first, then tests** — Change source code, then port/write tests.
+1. **Source first, then tests** — Source changes before test migration.
 2. **One concern per step** — Each step is independently verifiable.
 3. **Non-breaking first** — Pure additions before behavioral changes.
 4. **No LÖVE binary in CI** — Tests requiring `love` skip with `pending()`.
 5. **did_setup reset in tests** — `love2d.did_setup = false` in `before_each`.
-6. **Real lua_ls in CI** — LSP tests use real lua-language-server, skip if missing.
-7. **LSP unit tests** — Read `vim.lsp.config.lua_ls` after `setup()`, assert on settings.
+6. **Bare-bone Neovim only** — Every feature works on stock Neovim.
 
-### Development commands
-
-> These may change as steps complete. Check PROGRESS.md for current state.
-
-| Command | Notes |
-|---------|-------|
-| `make lint` | Stylua check (source + tests) |
-| `make test` | Run test suite (target depends on completed steps) |
-| `make format` | Auto-format with stylua |
-| `make dev` | Open Neovim with sample LÖVE project |
-
-### File structure (V3 target)
+### File structure (current — mid-refactor)
 
 ```
 lua/love2d/
   init.lua          — Main module: setup(), run(), stop(), find_src_path()
   config.lua        — Options, LSP library injection, autocmds
   utils.lua         — Shared utilities (is_love2d_project, notify)
-  types.lua         — [Step 2] LuaCATS type definitions (@meta)
-  health.lua        — [Step 4] :checkhealth love2d support
+  types.lua         — LuaCATS type definitions (@meta)
+  health.lua        — :checkhealth love2d support
 
 compiler/
-  love.lua          — [Step 5] Compiler plugin (makeprg + errorformat)
+  love.lua          — Compiler plugin (makeprg + errorformat)
 
 lsp/
-  lua_ls.lua        — [Step 7] Static lua_ls settings (file-based LSP config)
+  lua_ls.lua        — Static lua_ls settings (file-based LSP config)
 
-love2d/library/     — LÖVE API definitions for LSP
-luasocket/          — LuaSocket library definitions
+plugin/
+  love2d.lua        — User commands (:LoveRun, :LoveStop)
 
-tests/
-  minit.lua         — [Step 10] mini.test runner
-  love2d_spec.lua   — [Step 10] Unit tests (CI-safe)
-  platform_spec.lua — [Step 10] Love binary tests (local-only, pending-based)
-  lsp_spec.lua      — [Step 10] LSP unit + integration tests
-  game/             — Sample LÖVE game for manual testing
+love2d/             — LÖVE API type definitions (git submodule) → will move to libraries/
+luasocket/          — LuaSocket type definitions (git submodule) → will move to libraries/
 
 after/queries/lua/
   injections.scm    — Treesitter injection for GLSL in LÖVE shaders
 
-doc/love2d.txt      — Vimdoc help file
+spec/               — Busted test suite (temporary, will be deleted)
+  love2d_spec.lua
+  lsp_spec.lua
+  health_spec.lua
+
+tests/
+  e2e_game.lua      — Custom e2e runner (temporary, will be deleted)
+  e2e_bad_game.lua  — Custom e2e runner (temporary, will be deleted)
+  game/             — Sample LÖVE game for testing
+  bad-game/         — Broken LÖVE game for error testing
+
+doc/love2d.txt      — Vimdoc (outdated, will be rewritten)
+```
+
+### File structure (V3 target — after all steps complete)
+
+```
+lua/love2d/
+  init.lua          — Main module: setup(), run(), stop()
+  config.lua        — Options, LSP library injection, autocmds
+  utils.lua         — Shared utilities (is_love2d_project, notify)
+  types.lua         — LuaCATS type definitions (@meta)
+  health.lua        — :checkhealth love2d support
+
+compiler/
+  love.lua          — Compiler plugin (makeprg + errorformat)
+
+lsp/
+  lua_ls.lua        — Static lua_ls settings (file-based LSP config)
+
+plugin/
+  love2d.lua        — User commands (:LoveRun, :LoveStop)
+
+libraries/
+  love2d/           — LÖVE type definitions (git submodule)
+  luasocket/        — LuaSocket type definitions (git submodule)
+
+after/queries/lua/
+  injections.scm    — Treesitter injection for GLSL in LÖVE shaders
+
+tests/
+  minit.lua         — mini.test runner
+  love2d_spec.lua   — Unit tests (CI-safe)
+  platform_spec.lua — Love binary tests (local-only, pending-based)
+  lsp_spec.lua      — LSP unit + integration tests
+  game/             — Sample LÖVE game for testing
+  bad-game/         — Broken LÖVE game for error testing
+
+doc/love2d.txt      — Vimdoc (rewritten for V3)
 ```
 
 ### V3 configuration options
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `path_to_love_bin` | platform-specific | LÖVE executable path |
+| `path_to_love_bin` | `"love"` | Path to the LÖVE executable |
 | `restart_on_save` | `false` | Auto-restart game on Lua file save |
 | `debug_window_opts` | `nil` | Debug window configuration |
 
 ### V3 architecture
 
-**Setup flow (after Step 3)**
+**Setup flow**
 1. `love2d.setup(opts)` — guarded by `did_setup`, warns on double call
 2. `require("love2d.config").setup(opts)` — merges defaults, detects project
-3. If LÖVE project: `setup_lsp()` (injects libraries + configures lua_ls), create autocmds, set compiler
+3. If LÖVE project: `setup_lsp_libraries()` (injects submodule paths into lua_ls), `vim.lsp.enable("lua_ls")`, create autocmds, set compiler
 
-**LSP integration (current — Step 7 pending)**
-- `config.lua` resolves submodule paths (`love2d/`, `luasocket/`) from runtimepath and injects into lua_ls `workspace.library`
-- No runtime installation — type definitions ship as git submodules
-- After Step 7: static settings move to `lsp/lua_ls.lua`, only library injection stays in `config.lua`
-- Users with custom definitions override via `after/lsp/lua_ls.lua` (Neovim's built-in config chain)
+**LSP integration**
+- `lsp/lua_ls.lua` provides static settings (LuaJIT runtime, diagnostics, checkThirdParty)
+- `config.lua` resolves submodule paths (`libraries/love2d/`, `libraries/luasocket/`) from runtimepath and injects into lua_ls `workspace.library`
+- Type definitions ship as git submodules (LuaCATS/love2d, LuaCATS/luasocket)
+- Users override via `after/lsp/lua_ls.lua` (Neovim's built-in config chain)
 
-**Compiler plugin (after Step 5)**
+**Compiler plugin**
 - `compiler/love.lua` sets `makeprg` and `errorformat`
 - Auto-activated via `vim.cmd.compiler("love")` when a LÖVE project is detected
-- Replaces the old imperative `setup_makeprg_and_errorformat()` in config.lua
+- `:make` runs the game, errors parse into quickfix
 
-**Health checks (after Step 4)**
+**Health checks**
 - `:checkhealth love2d` reports: did_setup, Neovim version, love binary, lua-language-server, treesitter parsers
 
-### V3 testing (after Step 10)
+**Public API**
+- `setup(opts)`, `run(path)`, `stop()` — documented, stable
+- `find_src_path(path)`, `is_love2d_project()` — internal-use convention, available but not guaranteed stable
 
-- **Framework**: mini.test (via `tests/minit.lua`)
+**User commands**
+- `:LoveRun [path]` — run LÖVE project (auto-detects path if omitted)
+- `:LoveStop` — stop running project
+
+**No default keymaps** — users define their own.
+
+### V3 testing (target — after mini.test migration)
+
+- **Framework**: mini.test (via `tests/minit.lua` using lazy.minit)
 - **Unit tests** (`tests/love2d_spec.lua`): run in CI, no external deps
 - **Platform tests** (`tests/platform_spec.lua`): need LÖVE binary, skip with `pending()`
-- **LSP tests** (`tests/lsp_spec.lua`): unit tests read `vim.lsp.config.lua_ls`; integration tests need real lua-language-server
-
----
-
-## V2 — Legacy (being replaced)
-
-> ⚠️ This section describes the **old** V2 architecture. It is kept here for
-> reference while the refactor is in progress. Items are removed once the
-> corresponding V3 step is completed and verified.
->
-> **If a V3 section above contradicts something here, the V3 section wins.**
-
-### Legacy development commands
-
-```
-busted              — Run tests (Busted framework, requires nlua)
-luacheck lua/       — Lint
-stylua lua/ spec/   — Format
-```
-
-### Legacy file structure
-
-```
-lua/love2d/
-  init.lua          — setup(), run(), stop(), find_src_path()
-  config.lua        — LSP setup, project detection, autocmds, makeprg
-
-spec/               — Busted test suite (deleted in Step 10)
-  love2d_spec.lua
-  lsp_spec.lua
-
-.no neoconf.json    — Deleted in Step 6
-.busted             — Deleted in Step 10
-```
-
-### Legacy testing
-
-- Busted framework with `nlua`
-- LSP tests marked as `pending` due to setup complexity
-- Platform-specific binary paths for macOS/Linux
-
-### Legacy configuration options
-
-| Option | Notes |
-|--------|-------|
-| `setup_makeprg` | Removed in V3 — compiler is now always set for LÖVE projects |
-| `setup_compiler` | Removed in V3 — compiler is now always set for LÖVE projects |
-| `identify_love_projects` | Removed in V3 — project detection always runs, no toggle |
-| `path_to_love_bin` | Unchanged in V3 |
-| `restart_on_save` | Unchanged in V3 |
-| `debug_window_opts` | Unchanged in V3 |
-
-### Legacy architecture notes
-
-- LSP configured imperatively in `config.lua` via `vim.lsp.config.lua_ls`
-- `makeprg`/`errorformat` set via FileType autocmd in `config.lua`
-- No `did_setup` guard (added in Step 3)
-- No `types.lua`, `health.lua`, `compiler/love.lua`, `lsp/lua_ls.lua`
-- Minimum Neovim version: 0.11 (bumped to 0.12 in Step 8)
+- **LSP tests** (`tests/lsp_spec.lua`): unit tests read `vim.lsp.config.lua_ls`; integration tests need real lua_ls
 
 ---
 
 ## Skills
 
-See `.agents/skills/` for task-specific instructions. Key skills:
+See `.agents/skills/` for task-specific instructions.
 
 | Skill | When to use |
 |-------|-------------|
@@ -224,5 +216,4 @@ See `.agents/skills/` for task-specific instructions. Key skills:
 | `nvim-plugin` | Neovim plugin development best practices |
 | `nvim-test` | Running tests and diagnosing failures |
 
-> ⚠️ Skills are updated in Step 14. Until then, `nvim-test` may still
-> reference Busted patterns instead of mini.test.
+> ⚠️ Skills will be updated for mini.test in Step 17.
