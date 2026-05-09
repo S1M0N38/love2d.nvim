@@ -1,10 +1,9 @@
-.PHONY: test test-one lint format check dev
+.PHONY: test lint format check dev clean
 
 test:
-	busted
-
-test-one:
-	busted -o utf_terminal $(FILE)
+	# busted
+	cd tests/game && nvim -u repro.lua --headless -c 'luafile ../e2e_game.lua' main.lua
+	cd tests/bad-game && nvim -u repro.lua --headless -c 'luafile ../e2e_bad_game.lua' main.lua
 
 lint:
 	stylua --check lua/ spec/
@@ -16,3 +15,6 @@ check: lint test
 
 dev:
 	cd tests/game && nvim -u repro.lua main.lua
+
+clean:
+	find . -type d -name '.repro' -exec rm -rf {} +
