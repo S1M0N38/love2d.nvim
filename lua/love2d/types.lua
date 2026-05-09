@@ -20,4 +20,8 @@
 ---Shared utilities for love2d.nvim
 ---@class Love2D.Utils
 
+-- Internal-use functions (available on module table but not part of stable API):
+--   love2d.find_src_path(path) — see lua/love2d/init.lua
+--   love2d.is_love2d_project() — see lua/love2d/init.lua
+
 -- TODO: Add Love2D.Plugin class when module organization stabilizes (V3 refactor)

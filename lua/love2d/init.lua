@@ -52,7 +52,8 @@ local function enable_debug_window(job_opts, window_opts)
   return job_opts
 end
 
----Find a valid path to the Love2D project
+---Internal-use: find a valid path to a LÖVE project.
+---@private
 ---@param path string: The path to the Love2D project. If "" search for it.
 ---@return string?: The path to the Love2D project. nil if not found
 love2d.find_src_path = function(path)
@@ -115,8 +116,9 @@ love2d.stop = function()
   vim.fn.jobstop(love2d.job.id)
 end
 
----Detect if current directory is a LÖVE project
+---Internal-use: detect if current directory is a LÖVE project.
 ---Delegates to utils.is_love2d_project()
+---@private
 ---@return boolean: true if LÖVE project detected
 love2d.is_love2d_project = function()
   return require("love2d.utils").is_love2d_project()
