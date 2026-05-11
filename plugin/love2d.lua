@@ -36,7 +36,7 @@ end, {
     return vim
       .iter(sub_cmds_keys)
       :filter(function(sub_cmd)
-        return sub_cmd:find(arg_lead) ~= nil
+        return sub_cmd:find(arg_lead, 1, true) == 1
       end)
       :totable()
   end,
