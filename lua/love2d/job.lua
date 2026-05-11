@@ -41,7 +41,7 @@ function job._start_process()
     return
   end
   local src = vim.fn.fnamemodify(job.state.path_to_main_lua, ":h")
-  local cmd = config.options.path_to_love_bin .. " " .. src
+  local cmd = { config.options.path_to_love_bin, src }
 
   local win_opts = config.options.output
   output.start(job.state.path_to_love2d_project, win_opts)
