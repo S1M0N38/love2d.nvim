@@ -15,7 +15,7 @@
 ---
 
 > [!IMPORTANT]
-> Version 3.0.0 introduces breaking changes. The `LoveRun`/`LoveStop` commands have been replaced by `:Love run`/`:Love stop`. See `:help love2d-commands` for the full list.
+> Version 3.0.0 introduces breaking changes. If you prefer the old API, pin your installation to version `2.*`. See [CHANGELOG.md](https://github.com/S1M0N38/love2d.nvim/blob/main/CHANGELOG.md) for the full list.
 
 ## 💡 Idea
 
@@ -35,18 +35,38 @@ However, I believe that providing this simple codebase to explore can be a good 
 
 ## 📦 Installation
 
+Using `vim.pack`:
+
 ```lua
--- using lazy.nvim
+vim.pack.add({
+  {
+    src = 'https://github.com/S1M0N38/love2d.nvim',
+    version = vim.version.range('3'),
+  },
+})
+require('love2d').setup({})
+vim.keymap.set('n', '<leader>vr', '<cmd>Love run<cr>',    { desc = 'Run LÖVE' })
+vim.keymap.set('n', '<leader>vw', '<cmd>Love watch<cr>',  { desc = 'Watch LÖVE' })
+vim.keymap.set('n', '<leader>vi', '<cmd>Love info<cr>',   { desc = 'Info LÖVE' })
+vim.keymap.set('n', '<leader>vs', '<cmd>Love stop<cr>',   { desc = 'Stop LÖVE' })
+vim.keymap.set('n', '<leader>vo', '<cmd>Love output<cr>', { desc = 'Output panel' })
+```
+
+Using `lazy.nvim`:
+
+```lua
 {
-  "S1M0N38/love2d.nvim",
-  event = "VeryLazy",
-  version = "3.*",
+  'S1M0N38/love2d.nvim',
+  version = '3.*',
+  event = 'VeryLazy',
   opts = {},
   keys = {
-    { "<leader>v", ft = "lua", desc = "LÖVE" },
-    { "<leader>vr", "<cmd>Love run<cr>", ft = "lua", desc = "Run LÖVE" },
-    { "<leader>vw", "<cmd>Love watch<cr>", ft = "lua", desc = "Watch LÖVE" },
-    { "<leader>vs", "<cmd>Love stop<cr>", ft = "lua", desc = "Stop LÖVE" },
+    { '<leader>v',  '',                     desc = 'LÖVE' },
+    { '<leader>vr', '<cmd>Love run<cr>',    desc = 'Run LÖVE' },
+    { '<leader>vw', '<cmd>Love watch<cr>',  desc = 'Watch LÖVE' },
+    { '<leader>vi', '<cmd>Love info<cr>',   desc = 'Info LÖVE' },
+    { '<leader>vs', '<cmd>Love stop<cr>',   desc = 'Stop LÖVE' },
+    { '<leader>vo', '<cmd>Love output<cr>', desc = 'Output panel' },
   },
 }
 ```
