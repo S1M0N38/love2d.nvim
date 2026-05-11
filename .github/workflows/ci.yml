@@ -35,6 +35,7 @@ jobs:
           lua-language-server --check_format=pretty --check lua/ --configpath="$GITHUB_WORKSPACE/.luarc.json" --checklevel=Warning
       - name: Test
         run: |
+          sudo apt-get install -y libreadline-dev
           export PATH="$HOME/nvim-linux-x86_64/bin:$PATH"
           export VIMRUNTIME="$HOME/nvim-linux-x86_64/share/nvim/runtime"
           nvim -l tests/minit.lua --minitest
