@@ -36,7 +36,7 @@ describe("job", function()
     jobstart_calls = {}
     ---@diagnostic disable-next-line: duplicate-set-field
     vim.fn.jobstart = function(cmd, opts)
-      assert.is_true(type(cmd) == "string")
+      assert.is_true(type(cmd) == "string" or type(cmd) == "table")
       assert.is_function(opts.on_exit)
       table.insert(jobstart_calls, { cmd = cmd, opts = opts })
       return 99999
@@ -116,8 +116,7 @@ describe("job", function()
       assert.is_truthy(notify_calls[1].msg:match("Running"))
       -- Should have called jobstart with correct command
       assert.are.equal(1, #jobstart_calls)
-      assert.is_truthy(jobstart_calls[1].cmd:match("love"))
-      assert.is_truthy(jobstart_calls[1].cmd:match("project"))
+      assert.are.same({ "love", "/path/to/project" }, jobstart_calls[1].cmd)
     end)
   end)
 
