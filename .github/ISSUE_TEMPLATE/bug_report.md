@@ -46,7 +46,7 @@ nvim -u repro.lua main.lua
 ```
 
 > [!TIP]
-> Alternatively, you can clone this repository, navigate to the `tests/game` directory and run `make dev`.
+> Alternatively, you can clone this repository, navigate to the `tests/demo-game` directory and run `make dev`.
 
 3. Reproduce the bug
 

@@ -15,7 +15,7 @@ Brief description of the change and why it's needed.
 
 - [ ] `make check` passes (typechecking + formatting)
 - [ ] `make test` passes
-- [ ] Tested with `make dev` in `tests/game` (manual test / bug reproduction)
+- [ ] Tested with `make dev` in `tests/demo-game` (manual test / bug reproduction)
 - [ ] Updated `doc/love2d.txt` if user-facing changes
 
 ## Reviewers

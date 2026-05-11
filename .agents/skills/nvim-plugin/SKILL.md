@@ -101,4 +101,4 @@ When modifying this plugin:
 - LÖVE API definitions: `love2d/library/`
 - LuaSocket definitions: `luasocket/`
 - Treesitter injections: `after/queries/lua/injections.scm`
-- Sample game: `tests/game/`
+- Sample game: `tests/demo-game/`
