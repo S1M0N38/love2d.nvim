@@ -1,20 +1,27 @@
-.PHONY: test lint format check dev clean
+.PHONY: test test-one lint format check dev clean
 
 test:
-	# busted
-	cd tests/game && nvim -u repro.lua --headless -c 'luafile ../e2e_game.lua' main.lua
-	cd tests/bad-game && nvim -u repro.lua --headless -c 'luafile ../e2e_bad_game.lua' main.lua
+	nvim -l tests/minit.lua --minitest
+
+test-one:
+	nvim -l tests/minit.lua --minitest tests/$(MODULE)_spec.lua
 
 lint:
-	stylua --check lua/ spec/
+	@export TMPFILE="/tmp/love2d_vimruntime" && \
+		nvim --headless -c 'lua io.open(os.getenv("TMPFILE"),"w"):write(vim.env.VIMRUNTIME or ""):close()' -c 'q' 2>/dev/null && \
+		VIMRUNTIME="$$(cat "$$TMPFILE")" && rm -f "$$TMPFILE" && \
+		test -n "$$VIMRUNTIME" && \
+		export VIMRUNTIME && \
+		lua-language-server --check_format=pretty --check lua/ --configpath="$$(pwd)/.luarc.json" --checklevel=Warning
 
 format:
-	stylua lua/ spec/
+	stylua lua/ tests/
 
 check: lint test
 
 dev:
-	cd tests/game && nvim -u repro.lua main.lua
+	cd tests/demo-game && nvim -u repro.lua main.lua
 
 clean:
 	find . -type d -name '.repro' -exec rm -rf {} +
+	find . -type d -name '.tests' -exec rm -rf {} +
