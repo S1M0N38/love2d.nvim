@@ -75,30 +75,37 @@ For running tests and diagnosing failures, use the `nvim-test` skill.
 When modifying this plugin:
 
 1. Read the existing code first — match the project's conventions
-2. Check `CLAUDE.md` and `.pi/AGENT.md` for project-specific rules
-3. Look at existing `spec/*_spec.lua` files to match testing style
-4. Look at existing autocmd patterns in `lua/love2d/config.lua`
+2. Check `AGENTS.md` for project-specific rules and file structure
+3. Look at existing `tests/*_spec.lua` files to match testing style
+4. Look at existing autocmd patterns in `lua/love2d/autocmd.lua`
 
 ### Architecture Notes
 
-- **Job management** — Single concurrent game instance tracked via `love2d.job`.
-  Always check `love2d.job.id` before starting a new job.
-- **LSP integration** — Uses `vim.lsp.config` (Nvim 0.11+). Merges LÖVE library
-  paths into existing lua_ls settings. Never hardcode library paths.
-- **Project detection** — `is_love2d_project()` checks for `main.lua` or `love.`
-  function calls. Don't rely on file extension alone.
-- **Debug window** — Optional stdout capture via `enable_debug_window()`. Clean up
-  buffers and windows properly on close (use `pcall` for cleanup).
-- **Vendored libraries** — Do NOT edit `love2d/library/` or `luasocket/`. These
-  are managed externally (git submodule + LÖVE API definitions).
+- **Module dispatch** — `init.lua` is a thin dispatcher. `setup()` calls
+  `config`, `lsp`, `autocmd`, and `events` modules. No logic lives in init.
+- **Job management** — `love2d.job` module manages process lifecycle (run,
+  watch, stop). Single concurrent instance via `job.state.id`.
+- **Output panel** — `love2d.output` module manages a floating window for
+  LÖVE stdout/stderr with inline diagnostics via `vim.diagnostic`.
+- **Event-driven** — `love2d.events` detects project enter/leave and fires
+  `User EnterLove2DProject`/`LeaveLove2DProject`. Other modules subscribe.
+- **LSP integration** — `love2d.lsp` dynamically injects/removes LÖVE library
+  paths on project enter/leave. Uses `vim.lsp.config` config-chain merge.
+- **Project detection** — `love2d.utils` walks up from CWD to find a LÖVE root
+  (conf.lua with `love.conf`, main.lua with LÖVE callbacks/modules).
+- **Vendored libraries** — Do NOT edit `libraries/love2d/` or `libraries/luasocket/`.
+  These are git submodules with LÖVE/LuaSocket type definitions.
 
 ## File locations in this project
 
 - Plugin source: `lua/love2d/`
-- Tests: `spec/`
+- Tests: `tests/` (mini.test)
 - Plugin commands: `plugin/love2d.lua`
+- Compiler: `compiler/love.lua`
+- LSP base config: `lsp/lua_ls.lua`
 - Documentation: `doc/love2d.txt`
-- LÖVE API definitions: `love2d/library/`
-- LuaSocket definitions: `luasocket/`
+- LÖVE API definitions: `libraries/love2d/`
+- LuaSocket definitions: `libraries/luasocket/`
 - Treesitter injections: `after/queries/lua/injections.scm`
+- Output syntax: `after/syntax/love2d_output.vim`
 - Sample game: `tests/demo-game/`
