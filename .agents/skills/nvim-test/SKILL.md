@@ -137,7 +137,7 @@ luarocks install nlua
 - **`.busted`** — Test runner configuration. Do not recreate this file.
 - **`spec/love2d_spec.lua`** — Game execution and job management tests
 - **`spec/lsp_spec.lua`** — LSP configuration tests
-- **`tests/game/`** — Sample LÖVE game used by tests
+- **`tests/demo-game/`** — Realistic LÖVE game used by tests
 
 ## Platform considerations
 
