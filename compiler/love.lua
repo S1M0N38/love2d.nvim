@@ -1,7 +1,7 @@
-if vim.g.current_compiler then
+if vim.b.current_compiler then
   return
 end
-vim.g.current_compiler = "love"
+vim.b.current_compiler = "love"
 
 -- Resolve love binary path from plugin config (if set up), else default.
 local love_bin = "love"
