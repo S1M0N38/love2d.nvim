@@ -185,13 +185,9 @@ local function check_love_binary()
       vim.health.info("Could not detect LÖVE version")
     end
   else
-    local advice = is_default
-        and "Install LÖVE from https://love2d.org/ or set `path_to_love_bin` in setup()."
-        or "Check that `" .. bin .. "` exists and is executable, or update `path_to_love_bin` in setup()."
-    vim.health.warn(
-      "LÖVE binary not found: `" .. bin .. "`",
-      advice
-    )
+    local advice = is_default and "Install LÖVE from https://love2d.org/ or set `path_to_love_bin` in setup()."
+      or "Check that `" .. bin .. "` exists and is executable, or update `path_to_love_bin` in setup()."
+    vim.health.warn("LÖVE binary not found: `" .. bin .. "`", advice)
   end
 end
 
@@ -231,9 +227,7 @@ local function check_lua_ls()
   if vim.lsp.is_enabled("lua_ls") then
     vim.health.ok("lua_ls is enabled for auto-activation")
   else
-    vim.health.info(
-      "lua_ls is not currently enabled — it will be enabled automatically on project enter"
-    )
+    vim.health.info("lua_ls is not currently enabled — it will be enabled automatically on project enter")
   end
 
   -- Check if any lua_ls clients are active
@@ -305,9 +299,7 @@ local function check_treesitter()
     vim.health.info(
       "Treesitter `glsl` parser is not installed — shader code inside `newShader()` calls will not be highlighted"
     )
-    vim.health.info(
-      "Install with `:TSInstall glsl` or `vim.treesitter.install('glsl')` for full shader support."
-    )
+    vim.health.info("Install with `:TSInstall glsl` or `vim.treesitter.install('glsl')` for full shader support.")
   end
 end
 
