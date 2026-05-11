@@ -10,6 +10,7 @@ require("lazy.minit").repro({
 })
 
 -- You should be able to
---   - Run :LoveRun / :LoveStop
+--   - Run :Love run / :Love watch / :Love stop
 --   - See GLSL strings highlighted (run :TSInstall glsl)
 --   - Hover (<S-k>) on love functions and see documentation
+--   - :make picks up errors via love.errorhandler
