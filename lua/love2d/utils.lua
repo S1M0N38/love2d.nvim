@@ -1,15 +1,6 @@
 local utils = {}
 
----Display a notification with the love2d title
----@param msg string
----@param level? integer vim.log.levels.*
-function utils.notify(msg, level)
-  vim.notify(msg, level or vim.log.levels.INFO, { title = "love2d" })
-end
-
 --- LÖVE-specific names used for project detection.
---- Callbacks: `function love.X` definitions unique to LÖVE games.
---- Modules: `love.X.` namespaces unique to the LÖVE framework.
 local CALLBACKS = vim.split(
   [[load update draw keypressed keyreleased mousepressed mousereleased
     focus quit resize textinput errorhandler errhand directorydropped
@@ -51,36 +42,31 @@ local function has_love_module(lines)
   return false
 end
 
----Detect if current directory is a LÖVE project.
----Uses a tiered detection strategy:
----  1. conf.lua with love.conf (highest specificity, near-zero false positives)
----  2. main.lua with LÖVE callback definitions (very specific)
----  3. main.lua with LÖVE module usage (good specificity)
----  4. Any root-level .lua file with LÖVE callback definitions (multi-file projects)
+---Check if a directory looks like a LÖVE project root.
+---@param dir string Absolute path.
 ---@return boolean
-function utils.is_love2d_project()
-  -- Tier 1: conf.lua with love.conf function definition.
-  -- This pattern is unique to LÖVE — no other Lua framework uses it.
-  if vim.fn.filereadable("conf.lua") == 1 then
-    local lines = vim.fn.readfile("conf.lua")
-    for _, line in ipairs(lines) do
+local function is_love2d_root(dir)
+  -- conf.lua with love.conf
+  local conf = dir .. "/conf.lua"
+  if vim.fn.filereadable(conf) == 1 then
+    for _, line in ipairs(vim.fn.readfile(conf)) do
       if line:match("function love%.conf") then
         return true
       end
     end
   end
 
-  -- Tier 2 & 3: main.lua with LÖVE callbacks or module usage.
-  if vim.fn.filereadable("main.lua") == 1 then
-    local lines = vim.fn.readfile("main.lua")
+  -- main.lua with LÖVE callbacks or module usage.
+  local main = dir .. "/main.lua"
+  if vim.fn.filereadable(main) == 1 then
+    local lines = vim.fn.readfile(main)
     if has_love_callback(lines) or has_love_module(lines) then
       return true
     end
   end
 
-  -- Tier 4: Any root-level .lua file with LÖVE callback definitions.
-  -- Catches multi-file projects where main.lua just does require("src.main").
-  local files = vim.fn.glob("*.lua", false, true)
+  -- Any .lua file with LÖVE callback definitions.
+  local files = vim.fn.glob(dir .. "/*.lua", false, true)
   for _, file in ipairs(files) do
     if vim.fn.filereadable(file) == 1 then
       local lines = vim.fn.readfile(file)
@@ -91,6 +77,38 @@ function utils.is_love2d_project()
   end
 
   return false
+end
+
+function utils.path_to_love2d_project()
+  local dir = vim.fn.getcwd()
+  while dir do
+    if is_love2d_root(dir) then
+      return dir
+    end
+    local parent = vim.fn.fnamemodify(dir, ":h")
+    if parent == dir then
+      return
+    end
+    dir = parent
+  end
+end
+
+function utils.path_to_main_lua()
+  local dir = vim.fn.getcwd()
+  while dir do
+    if vim.fn.filereadable(dir .. "/conf.lua") == 1 or vim.fn.isdirectory(dir .. "/.git") == 1 then
+      local main = dir .. "/main.lua"
+      if vim.fn.filereadable(main) == 1 then
+        return main
+      end
+      return -- found root but no main.lua — stop walking
+    end
+    local parent = vim.fn.fnamemodify(dir, ":h")
+    if parent == dir then
+      return
+    end
+    dir = parent
+  end
 end
 
 return utils
