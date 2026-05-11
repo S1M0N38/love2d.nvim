@@ -33,3 +33,4 @@ jobs:
             LÖVE 2D development support for Neovim: LSP integration, game execution, and developer workflow.
           copy_directories: |
             {{ neovim.plugin.dirs }}
+            libraries
