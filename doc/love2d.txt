@@ -1,178 +1,278 @@
 ================================================================================
 INTRODUCTION                                                          *love2d*
 
-love2d.nvim is a simple plugin to help you develop games using LÖVE.
+love2d.nvim is a plugin to help you develop games with LÖVE.
 
 Table of contents:
 
-1. SETUP: Install and setup the plugin.                         |love2d-setup|
-2. COMMANDS: Commands provided by the plugin.                |love2d-commands|
-3. LSP: Explaining LSP support for LÖVE.                          |love2d-lsp|
-4. GLSL: Notes about GLSL and tree-sitter support.               |love2d-glsl|
+1. SETUP: Install and configure the plugin.                     |love2d-setup|
+2. COMMANDS: Run, watch, stop your game.                     |love2d-commands|
+3. OUTPUT: Floating output panel and diagnostics.              |love2d-output|
+4. LSP: LÖVE-aware lua_ls configuration.                          |love2d-lsp|
+5. EVENTS: User autocmds for project enter/leave.              |love2d-events|
+6. COMPILER: :make integration for LÖVE.                     |love2d-compiler|
+7. GAME SETUP: Configure your LÖVE game for the plugin.     |love2d-gamesetup|
+8. GLSL: Treesitter injections for inline shaders.               |love2d-glsl|
+9. HEALTH: Diagnose issues with :checkhealth.                  |love2d-health|
 
 
 ================================================================================
 SETUP                                                           *love2d-setup*
 
-It's highly recommended to use a plugin manager to install love2d.nvim. For
-example, using `lazy.nvim`:
+Install love2d.nvim with your preferred method.
 
->lua
+Using `vim.pack` (recommended): >lua
+
+  vim.pack.add({
+    {
+      src = 'https://github.com/S1M0N38/love2d.nvim',
+      version = vim.version.range('3'),
+    },
+  })
+  require('love2d').setup({})
+  vim.keymap.set('n', '<leader>v',  '<cmd>Love run<cr>',    { desc = 'Run LÖVE' })
+  vim.keymap.set('n', '<leader>vw', '<cmd>Love watch<cr>',  { desc = 'Watch LÖVE' })
+  vim.keymap.set('n', '<leader>vs', '<cmd>Love stop<cr>',   { desc = 'Stop LÖVE' })
+  vim.keymap.set('n', '<leader>vo', '<cmd>Love output<cr>', { desc = 'Output panel' })
+<
+
+Using `lazy.nvim`: >lua
+
   {
-    "S1M0N38/love2d.nvim",
-    event = "VeryLazy",
-    opts = { },
+    'S1M0N38/love2d.nvim',
+    version = '3.*',
+    event = 'VeryLazy',
+    opts = {},
     keys = {
-      { "<leader>v", desc = "LÖVE" },
-      { "<leader>vv", "<cmd>LoveRun<cr>", desc = "Run LÖVE" },
-      { "<leader>vs", "<cmd>LoveStop<cr>", desc = "Stop LÖVE" },
+      { '<leader>v',  '<cmd>Love run<cr>',    desc = 'Run LÖVE' },
+      { '<leader>vw', '<cmd>Love watch<cr>',  desc = 'Watch LÖVE' },
+      { '<leader>vs', '<cmd>Love stop<cr>',   desc = 'Stop LÖVE' },
+      { '<leader>vo', '<cmd>Love output<cr>', desc = 'Output panel' },
     },
   }
 <
 
-Usually, in the installation example, the plugin author provides the bare
-minimum setup. However, love2d.nvim has very few options so it makes sense to
-discuss them here. Here is the breakdown of the previous example:
+`lazy.nvim` calls |love2d.setup()| automatically with the `opts` table but you
+still need to pass an empty table `{}` to the `opts` argument.
 
-- `S1M0N38/love2d.nvim`: Where to download the plugin hosted on GitHub.
-- `cmd`: Load this plugin only when the `:LoveRun` command is called.
-- `opts`: A table with plugin options. See |love2d.setup()|.
-- `keys`: Key mappings for the plugin.
-
-So with this configuration, when the command `:LoveRun` is called:
-
-1. The `love2d.nvim` plugin is loaded
-2. |love2d.setup()| is called with the `opts` table
-3. The command `:LoveRun` is run. See |love2d-commands|.
-
-(If you are too lazy to run the `:LoveRun` command, you can use the keymap
-`<leader>vv`)
-
-
-                                                              *love2d.setup()*
-love2d.setup({opts}) ~
-
-  The `<plugin>.setup()` function is a convention used by many plugins to set
-  up options provided by the user. It's so common that `lazy.nvim`
-  automatically calls the `<plugin>.setup()` function using the `opts` table.
-
-  The table `opts` that you specify, will be merged with the default options
-  which are:
+The options are merged with the defaults:
 
 >lua
   {
     path_to_love_bin = "love",
-    restart_on_save = false,
-    debug_window_opts = nil,
-    setup_makeprg = true,
-    identify_love_projects = true
+    output = nil,
   }
 <
+                                                              *love2d.setup()*
+love2d.setup({opts}) ~
 
-  - `path_to_love_bin`: The path to the `love` binary. If you have the `love`
-    binary in your `PATH` you can leave this option empty. If you are using
-    MacOS, you can add `love.app` to your `/Applications` and then set to
-    `"/Applications/love.app/Contents/MacOS/love"`
 
-  - `restart_on_save`: Restart the game using |love2d.stop()| and
-    |love2d.run()| when you save a file in the game project.
+  `path_to_love_bin` (string)  Path to the LÖVE binary. Defaults to `"love"`,
+    which works if `love` is in your `PATH`. On macOS, if you installed LÖVE
+    as an `.app`, set it to something like
+    `"/Applications/love.app/Contents/MacOS/love"`.
 
-  - `debug_window_opts`: If set, a new window will be opened showing the
-    stdout of the running LÖVE project. This is useful for debugging using
-    `print()` statements. The value should be a table compatible with the
-    `opts` parameter of |nvim_open_win()|. For example, to open a split window
-    below the current one:
+  `output` (nil|false|table)   Controls the floating output panel (see
+    |love2d-output|).
+      • `nil` (default): auto-open the panel.
+      • `false`: disable auto-open. Diagnostics still appear inline.
+      • `table`: auto-open with custom window config, merged with the
+        defaults. Accepts the same keys as the `config` parameter of
+        |nvim_open_win()|. For example, a right split instead of a float:
 
+    For example if you prefer a vertical split:
 >lua
-  {
-    debug_window_opts = {
-      split = "below",
+    {
+      output = {
+        vertical = true,
+        split = "right",
+      }
     }
-  }
 <
-
-  - `setup_makeprg`: When true (default), automatically setup `makeprg` and
-    `errorformat` for LÖVE projects. This allows you to use `:make` to run
-    your LÖVE project and parse error messages to jump to the correct file
-    and line number when errors occur.
-
-  - `identify_love_projects`: When true (default), the plugin will only
-    initialize LSP support if it detects a LÖVE project. Detection works by
-    checking for a `main.lua` file in the current directory or by scanning
-    `*.lua` files for usage of `love.*` functions. When false, LSP support
-    will always be initialized regardless of project type.
-
-  The plugin automatically provides LÖVE and LuaSocket library definitions
-  for LSP support - no manual library path configuration is required.
 
 ================================================================================
 COMMANDS                                                     *love2d-commands*
 
-User commands, that is commands that start with `:` followed by a capital
-letter, are the main way to interact with plugins. The available commands
-provided by this plugin are:
+All commands are accessed through the `:Love` command with tab-completed
+subcommands:
 
-:LoveRun [path/to/game/src] ~
-  When running this command without providing `path/to/game/src`, love2d will
-  try to look for the directory containing `main.lua`. If you try to run
-  from a source file of your game, it should work.
-  You can also provide the path to your game source code to run the game. For
-  example, if you focus on developing only one game at a time, it makes sense
-  to define a keymap to run that specific game.
+:Love run ~
+  Run the detected LÖVE project. Shows a warning if no project is found or if
+  a game is already running.
 
-:LoveStop  ~
-  If you have previously started a game using `:LoveRun`, you can stop it
-  using this command.
+:Love watch ~
+  Run the project and automatically restart it every time you save a Lua file
+  (debounced 300ms). Stops any previously running process first.
+
+:Love stop ~
+  Stop the running LÖVE process. Also stops watch mode if active.
+
+:Love info ~
+  Show the detected project name, entry point, status (running / watching /
+  stopped), and last exit code.
+
+:Love output ~
+  Cycle the output panel: hidden → focused → hidden. See |love2d-output|.
+
+
+================================================================================
+OUTPUT                                                         *love2d-output*
+
+When a LÖVE project is running, a scratch buffer displays its stdout and
+stderr output.
+
+Stderr errors are also shown as inline |vim.diagnostic|
+(highlighted like lsp errors) in the corresponding source file.
+Note: this requires a custom `love.errorhandler` — see |love2d-gamesetup|.
+
+The output panel has three states:
+
+  hidden → unfocused → focused → hidden
+
+  • hidden:    window is closed.
+  • unfocused: window is open, cursor stays in your code.
+  • focused:   cursor is inside the output panel.
+
+By default the panel auto-opens unfocused on first output. If you close it
+manually it stays closed until the next `:Love run` or `:Love watch`.
+
+Buffer-local keymaps (active inside the output panel):
+
+  `q`        Close the panel.
+  `<CR>`     Jump to the file and line under the cursor.
+
+The panel auto-scrolls to the bottom. If you scroll up, it stops scrolling
+until you scroll back down.
+
+See |love2d-setup| for how to customize or disable the output panel.
 
 
 ================================================================================
 LSP                                                               *love2d-lsp*
 
-Language Server Protocol (LSP) is the way to provide code completion, linting,
-formatting, and other language-specific features to your editor. So it
-effectively makes your editor smarter, enhancing your development experience.
+When a LÖVE project is detected (see |love2d-events|), the plugin
+automatically configures `lua_ls` using |vim.lsp.config|. On project enter it
+merges LÖVE-specific settings into your existing `lua_ls` config:
 
-This plugin automatically configures `lua_ls` for LÖVE development when a LÖVE
-project is detected. It uses Neovim's built-in LSP configuration system
-(`vim.lsp.config`) available in Neovim 0.11+. The plugin will:
+  • LuaJIT runtime
+  • LÖVE + LuaSocket type definitions (bundled with the plugin)
+  • Disables `duplicate-set-field` and `checkThirdParty` diagnostics
 
-- Configure Lua 5.1/LuaJIT runtime settings appropriate for LÖVE
-- Add bundled LÖVE and LuaSocket library definitions to the workspace
-- Merge with any existing `lua_ls` configuration you may have
-- Only activate when `identify_love_projects` detects a LÖVE project
+On project leave the LÖVE library paths are stripped and any running `lua_ls`
+is notified via `workspace/didChangeConfiguration` so it updates
+immediately.
 
-For example, when placing the cursor over the `love` variable and pressing
-`K`, you should see the documentation for the `love` namespace.
+Project detection walks up from the current directory and looks for:
 
+  • `conf.lua` containing `function love.conf`
+  • `main.lua` with LÖVE callbacks or `love.*` module usage
+  • Any `*.lua` file with `function love.X` callback definitions
+
+No configuration is needed — just open a LÖVE project and `lua_ls` gets the
+right completions. For example, press `K` over `love.graphics` to see its
+documentation.
+
+
+================================================================================
+EVENTS                                                         *love2d-events*
+
+The plugin fires User autocmds when a LÖVE project is detected or left.
+You can use them to run your own code on project enter/leave:
+
+>lua
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "LoveProjectEnter",
+    callback = function(args)
+      local root = args.data.path_to_love2d_project
+      local main = args.data.path_to_main_lua
+      print("LÖVE project at: " .. root)
+    end,
+  })
+<
+                                                            *LoveProjectEnter*
+LoveProjectEnter ~
+  Fired when a LÖVE project is detected. `args.data` contains:
+    • `path_to_love2d_project` (string): absolute path to the project root.
+    • `path_to_main_lua` (string): absolute path to `main.lua`.
+
+                                                            *LoveProjectLeave*
+LoveProjectLeave ~
+  Fired when leaving a LÖVE project. `args.data` is nil.
+
+Detection triggers on |VimEnter|, |DirChanged|, and |BufEnter|.
+
+================================================================================
+COMPILER                                                     *love2d-compiler*
+
+Vim's |:make| command runs a program, captures its output, and populates the
+|quickfix| list so you can jump to errors. A *compiler plugin* sets the
+|'makeprg'| (what to run) and |'errorformat'| (how to parse errors) for a
+specific tool.
+
+This plugin ships a compiler for LÖVE. To use it:
+
+>vim
+  :compiler love
+<
+
+Now |:make| runs the LÖVE binary on the detected source directory. Errors
+matching `file:line: error: message` are parsed into the quickfix list so you
+can jump to them with |:copen| and |:cfirst|.
+
+The compiler reads the binary path from |love2d.setup()| and the source path
+from the detected project.
+
+Note: LÖVE's default `love.errorhandler` opens a graphical window and never
+  exits, which hangs `:make`. You need a custom error handler that writes
+  parseable errors to stderr and exits. See |love2d-gamesetup|.
+
+================================================================================
+GAME SETUP                                                  *love2d-gamesetup*
+
+By default, LÖVE's error handler opens a graphical window and never exits.
+This prevents the output panel and `:make` from capturing errors.
+
+Add the following to your project's `conf.lua` to write errors to stderr
+and exit immediately:
+
+>lua
+  love.errorhandler = function(msg)
+    msg = tostring(msg)
+    local file, line, message = msg:match("(%S+):(%d+):%s+(.*)")
+    if file and line then
+      io.stderr:write(file .. ":" .. line .. ": error: " .. message:gsub("\n.*", "") .. "\n")
+    else
+      local first_line = msg:match("^(.-)\n") or msg
+      io.stderr:write(first_line .. "\n")
+    end
+    io.stderr:flush()
+    os.exit(1)
+  end
+<
+
+With this in place, runtime errors appear in the output panel and as inline
+diagnostics (see |love2d-output|), and `:make` populates the quickfix list
+(see |love2d-compiler|). The drawback is that the game will exit immediately
+and you will not be presented with the classic LÖVE blue screen error.
+
+BTW if you are reading this, you have descended into the rabbit hole of
+terminal-only development. Having errors directly in the terminal is better
+for you and your coding agent, so IMHO a custom error handler is the way
+to go.
 
 ================================================================================
 GLSL                                                             *love2d-glsl*
 
 OpenGL Shading Language (GLSL) is a high-level shading language for writing
-shaders. Shaders are small programs which are run on the graphics card when
-drawing. See https://www.love2d.org/wiki/love.graphics.newShader section
-"Shader Language" for love2d specific aliases.
+shaders. See https://www.love2d.org/wiki/love.graphics.newShader section
+"Shader Language" for LÖVE-specific aliases.
 
-This plugin adds additional queries for Treesitter to support inline GLSL in
-specific places. For example, when calling `love.graphics.newShader()`.
+This plugin provides Treesitter injections so that inline GLSL inside
+`love.graphics.newShader()` is recognized as `glsl` code, giving you syntax
+highlighting and other Treesitter-based features.
 
-For these queries to take effect, you need to have `lua` and `glsl` parsers
-installed. The easiest way to do so is by using the plugin `nvim-treesitter`
-from GitHub https://github.com/nvim-treesitter/nvim-treesitter. After
-installing the plugin, you can run `:TSInstall lua glsl` to install parsers.
-
-Doing so will enable Neovim to "understand" that the string inside
-`love.graphics.newShader()` is not just a string, but `glsl` code. And you
-will get:
-
-1. Syntax highlighting for inline shaders.
-2. If you have `Comment.nvim`, it will now properly comment inside shaders.
-3. The plugin `nvim-treesitter-textobjects` will now work inside shaders.
-4. And any other plugin/feature that depends on Treesitter.
-
-If parsers are installed and the plugin is loaded, you should see the code
-below properly highlighted! (You may have to execute |:edit| to refresh the
-current file)
+Install the parsers with `:TSInstall lua glsl` (requires nvim-treesitter).
+Then reload the buffer with |:edit| to see the shader below highlighted:
 
 >lua
   love.graphics.newShader([[
@@ -183,6 +283,13 @@ current file)
     }
   ]])
 <
+
+================================================================================
+HEALTH                                                         *love2d-health*
+
+Run |:checkhealth love2d| to diagnose common issues. It checks plugin setup,
+Neovim version (≥ 0.12.2), LÖVE binary, lua_ls, type definitions,
+Treesitter parsers, and GLSL injection.
 
 ==============================================================================
  vim:tw=78:ts=8:et:ft=help:norl:
