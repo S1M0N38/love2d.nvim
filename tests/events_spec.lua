@@ -67,7 +67,10 @@ describe("events", function()
       return dir
     end
 
+    local old_cwd
+
     before_each(function()
+      old_cwd = vim.fn.getcwd()
       captured_user_events = {}
       -- Capture User autocmd events fired by events.check()
       vim.api.nvim_create_autocmd("User", {
@@ -83,7 +86,7 @@ describe("events", function()
 
     after_each(function()
       -- Restore cwd
-      vim.cmd("cd " .. vim.fn.getcwd())
+      vim.cmd("cd " .. old_cwd)
       -- Clean temp dirs
       for _, dir in ipairs(tmpdirs) do
         vim.fn.delete(dir, "rf")
