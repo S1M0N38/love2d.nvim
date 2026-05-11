@@ -27,7 +27,7 @@ jobs:
       - name: Format check
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          stylua --check lua/ spec/
+          stylua --check lua/ tests/
       - name: Typecheck
         run: |
           export PATH="$HOME/.local/share/lua-language-server/bin:$PATH"

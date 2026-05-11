@@ -1,6 +1,6 @@
 # nvim-neorocks/luarocks-tag-release
-#   GitHub workflow for automatically generating Luarocks releases from tags and running busted tests
-#   It use .github/workflow/.luarc.json as config file
+#   GitHub workflow for automatically generating Luarocks releases from tags
+#   https://github.com/nvim-neorocks/luarocks-tag-release
 #   https://github.com/nvim-neorocks/luarocks-tag-release
 
 
@@ -30,6 +30,6 @@ jobs:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
           detailed_description: |
-            A template for Neovim plugin
+            LÖVE 2D development support for Neovim: LSP integration, game execution, and developer workflow.
           copy_directories: |
             {{ neovim.plugin.dirs }}
