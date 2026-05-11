@@ -33,3 +33,8 @@ jobs:
           export PATH="$HOME/.local/share/lua-language-server/bin:$PATH"
           export VIMRUNTIME="$HOME/nvim-linux-x86_64/share/nvim/runtime"
           lua-language-server --check_format=pretty --check lua/ --configpath="$GITHUB_WORKSPACE/.luarc.json" --checklevel=Warning
+      - name: Test
+        run: |
+          export PATH="$HOME/nvim-linux-x86_64/bin:$PATH"
+          export VIMRUNTIME="$HOME/nvim-linux-x86_64/share/nvim/runtime"
+          nvim -l tests/minit.lua --minitest
