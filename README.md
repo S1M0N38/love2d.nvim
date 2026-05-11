@@ -15,7 +15,7 @@
 ---
 
 > [!IMPORTANT]
-> Version 2.0.0 introduces breaking changes. If you want to keep using the previous version, just pin the plugin to `1.*`.
+> Version 3.0.0 introduces breaking changes. The `LoveRun`/`LoveStop` commands have been replaced by `:Love run`/`:Love stop`. See `:help love2d-commands` for the full list.
 
 ## 💡 Idea
 
@@ -40,12 +40,13 @@ However, I believe that providing this simple codebase to explore can be a good 
 {
   "S1M0N38/love2d.nvim",
   event = "VeryLazy",
-  version = "2.*",
-  opts = { },
+  version = "3.*",
+  opts = {},
   keys = {
     { "<leader>v", ft = "lua", desc = "LÖVE" },
-    { "<leader>vv", "<cmd>LoveRun<cr>", ft = "lua", desc = "Run LÖVE" },
-    { "<leader>vs", "<cmd>LoveStop<cr>", ft = "lua", desc = "Stop LÖVE" },
+    { "<leader>vr", "<cmd>Love run<cr>", ft = "lua", desc = "Run LÖVE" },
+    { "<leader>vw", "<cmd>Love watch<cr>", ft = "lua", desc = "Watch LÖVE" },
+    { "<leader>vs", "<cmd>Love stop<cr>", ft = "lua", desc = "Stop LÖVE" },
   },
 }
 ```

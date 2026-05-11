@@ -32,7 +32,7 @@ vim.pack.add({
 -- vim.g.love2d_path_to_love_bin = "love"
 
 -- You should be able to:
---   - Run :LoveRun / :LoveStop
+--   - Run :Love run / :Love stop
 --   - See GLSL strings highlighted (run :TSInstall glsl)
 --   - Hover (<S-k>) on love functions and see documentation
 
@@ -65,7 +65,7 @@ What happened instead?
 Write down the steps to reproduce the behavior:
 
 1. Open a LÖVE project file
-2. Run `:LoveRun`
+2. Run `:Love run`
 3. Observe the error
 4. ...
 

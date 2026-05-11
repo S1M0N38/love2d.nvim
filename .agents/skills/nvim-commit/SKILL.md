@@ -60,15 +60,25 @@ The scope identifies the module or area that changed.
 | ---------------------------------------- | ----------- |
 | `lua/love2d/init.lua`                    | `init`      |
 | `lua/love2d/config.lua`                  | `config`    |
+| `lua/love2d/job.lua`                     | `job`       |
+| `lua/love2d/output.lua`                  | `output`    |
+| `lua/love2d/events.lua`                  | `events`    |
+| `lua/love2d/autocmd.lua`                 | `autocmd`   |
+| `lua/love2d/lsp.lua`                     | `lsp`       |
+| `lua/love2d/health.lua`                  | `health`    |
+| `lua/love2d/utils.lua`                   | `utils`     |
+| `lua/love2d/types.lua`                   | `types`     |
 | `plugin/love2d.lua`                      | `plugin`    |
+| `compiler/love.lua`                      | `compiler`  |
 | `doc/love2d.txt`                         | `docs`      |
 | `README.md`                              | `docs`      |
-| `spec/*_spec.lua`                        | omit scope  |
+| `tests/*_spec.lua`                       | omit scope  |
 | `after/queries/lua/injections.scm`       | `injections`|
-| `love2d/library/*`                       | `library`   |
-| `luasocket/*`                            | `library`   |
+| `after/syntax/*`                         | `syntax`    |
+| `libraries/love2d/*`                     | `library`   |
+| `libraries/luasocket/*`                  | `library`   |
 | `.github/workflows/*`                    | `ci`        |
-| `.luacheckrc`, `.stylua.toml`, `prek.toml`| omit scope |
+| `.stylua.toml`, `.luarc.json`            | omit scope  |
 
 When multiple files span different scopes, pick the scope of the primary change.
 
@@ -119,7 +129,7 @@ Group logically related changes together.
 
 ```bash
 # Single line
-git commit -m "feat(config): add debounce option for restart_on_save"
+git commit -m "feat(config): add output option for panel configuration"
 
 # With body
 git commit -m "$(cat <<'EOF'
@@ -135,7 +145,7 @@ EOF
 
 - Present tense, imperative mood: "add option" not "added option"
 - Start with lowercase after colon: `feat(config): add debounce helper`
-- Be specific: "add `restart_on_save` option" beats "add new option"
+- Be specific: "add `output` option" beats "add new option"
 - Keep under 72 characters
 - Don't end with a period
 
