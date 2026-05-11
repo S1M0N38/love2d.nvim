@@ -113,13 +113,13 @@
 -- 5. Events
 ---------------------------------------------------------------------------
 
----Payload for the `User EnterLove2DProject` autocmd event.
+---Payload for the `User LoveProjectEnter` autocmd event.
 ---Fired when Neovim detects that the CWD is inside a LÖVE project.
 ---@class Love2D.Events.EnterData
 ---@field path_to_love2d_project string Absolute path to the detected project root.
 ---@field path_to_main_lua? string Absolute path to `main.lua`, or `nil` if the project has none.
 
----Payload for the `User LeaveLove2DProject` autocmd event.
+---Payload for the `User LoveProjectLeave` autocmd event.
 ---Fired when Neovim detects that the CWD is no longer inside a LÖVE project.
 ---@class Love2D.Events.LeaveData
 ---@field path_to_love2d_project nil Always `nil` on leave.
@@ -217,14 +217,14 @@ function utils.path_to_main_lua() end
 local job = {}
 
 ---Set the current LÖVE project paths.
----Called by the autocmd handler on `User EnterLove2DProject`.
+---Called by the autocmd handler on `User LoveProjectEnter`.
 ---@param path_to_love2d_project string Absolute path to the project root.
 ---@param path_to_main_lua string Absolute path to `main.lua`.
 function job.set_project(path_to_love2d_project, path_to_main_lua) end
 
 ---Clear the current LÖVE project paths and stop everything.
 ---Stops watch mode, kills the running process (if any), and resets project paths.
----Called by the autocmd handler on `User LeaveLove2DProject`.
+---Called by the autocmd handler on `User LoveProjectLeave`.
 function job.clear_project() end
 
 ---Run the detected LÖVE project once.
@@ -352,8 +352,8 @@ local events = {}
 
 ---Set up project-detection autocmds.
 ---Listens to `VimEnter`, `DirChanged`, and `BufEnter` to detect when the CWD
----enters or leaves a LÖVE project. Fires `User EnterLove2DProject` and
----`User LeaveLove2DProject` accordingly.
+---enters or leaves a LÖVE project. Fires `User LoveProjectEnter` and
+---`User LoveProjectLeave` accordingly.
 function events.setup() end
 
 ------------------------------------------------------------------------
@@ -365,7 +365,7 @@ function events.setup() end
 local autocmd = {}
 
 ---Set up autocmds for love2d.nvim.
----Subscribes to `User EnterLove2DProject` and `User LeaveLove2DProject` events:
+---Subscribes to `User LoveProjectEnter` and `User LoveProjectLeave` events:
 ---  - On enter: updates job state and shows a notification with project info.
 ---  - On leave: clears job state, closes the output panel, and notifies.
 function autocmd.setup() end
@@ -380,7 +380,7 @@ function autocmd.setup() end
 local lsp = {}
 
 ---Initialize LSP integration.
----Subscribes to `User EnterLove2DProject` / `User LeaveLove2DProject` events
+---Subscribes to `User LoveProjectEnter` / `User LoveProjectLeave` events
 ---to dynamically configure lua_ls. Calls `vim.lsp.enable("lua_ls")` once
 ---(no-op if already enabled by the user).
 function lsp.setup() end
@@ -400,12 +400,12 @@ function lsp._get_existing_library() end
 function lsp._build_settings(library_paths) end
 
 ---Configure lua_ls for LÖVE development.
----Called on `User EnterLove2DProject`. Reads existing `workspace.library` paths,
+---Called on `User LoveProjectEnter`. Reads existing `workspace.library` paths,
 ---appends love paths, then merges love-specific settings into the lua_ls config chain.
 function lsp._enable() end
 
 ---Remove love-specific library paths from the lua_ls config.
----Called on `User LeaveLove2DProject`. Strips love paths from `workspace.library`,
+---Called on `User LoveProjectLeave`. Strips love paths from `workspace.library`,
 ---keeping user-defined paths intact, and notifies any running lua_ls clients
 ---via `workspace/didChangeConfiguration`.
 function lsp._disable() end

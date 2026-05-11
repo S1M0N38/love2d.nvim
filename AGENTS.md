@@ -15,7 +15,7 @@ lua/love2d/
   health.lua        :checkhealth love2d
   job.lua           Process lifecycle (run, watch, stop)
   output.lua        Floating output panel + inline diagnostics
-  events.lua        Fires EnterLove2DProject / LeaveLove2DProject
+  events.lua        Fires LoveProjectEnter / LoveProjectLeave
   lsp.lua           Dynamic lua_ls config on project enter/leave
   autocmd.lua       Enter/Leave handlers (job state, notifications)
 

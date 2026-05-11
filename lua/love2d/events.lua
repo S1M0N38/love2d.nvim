@@ -11,7 +11,7 @@ local function check()
 
   if not was_in_project and in_project then
     vim.api.nvim_exec_autocmds("User", {
-      pattern = "EnterLove2DProject",
+      pattern = "LoveProjectEnter",
       data = {
         path_to_love2d_project = root,
         path_to_main_lua = utils.path_to_main_lua(),
@@ -19,7 +19,7 @@ local function check()
     })
   elseif was_in_project and not in_project then
     vim.api.nvim_exec_autocmds("User", {
-      pattern = "LeaveLove2DProject",
+      pattern = "LoveProjectLeave",
       data = {
         path_to_love2d_project = nil,
         path_to_main_lua = nil,

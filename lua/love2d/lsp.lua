@@ -5,10 +5,10 @@
 ---Design:
 ---   - lsp/lua_ls.lua provides the base config (cmd) — zero-config for users.
 ---   - This module merges love-specific settings (runtime, diagnostics, library)
----     on EnterLove2DProject via vim.lsp.config("lua_ls", { ... }).
+---     on LoveProjectEnter via vim.lsp.config("lua_ls", { ... }).
 ---   - workspace.library is read from the resolved config first, then love paths
 ---     are appended — user paths are never lost.
----   - On LeaveLove2DProject, love library paths are stripped from the config
+---   - On LoveProjectLeave, love library paths are stripped from the config
 ---     and any running lua_ls client is notified via workspace/didChangeConfiguration.
 ---   - Static settings (LuaJIT runtime, duplicate-set-field disable, checkThirdParty)
 ---     are left in place on leave — they're harmless for non-LÖVE Lua.
@@ -128,7 +128,7 @@ end
 function lsp.setup()
   vim.api.nvim_create_autocmd("User", {
     group = augroup,
-    pattern = "EnterLove2DProject",
+    pattern = "LoveProjectEnter",
     callback = function()
       lsp._enable()
     end,
@@ -136,7 +136,7 @@ function lsp.setup()
 
   vim.api.nvim_create_autocmd("User", {
     group = augroup,
-    pattern = "LeaveLove2DProject",
+    pattern = "LoveProjectLeave",
     callback = function()
       lsp._disable()
     end,

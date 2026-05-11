@@ -97,14 +97,14 @@ tests/
 
 ### `events_spec.lua`
 
-- Fires `EnterLove2DProject` when detection returns a root
-- Fires `LeaveLove2DProject` when detection returns nil after being in project
+- Fires `LoveProjectEnter` when detection returns a root
+- Fires `LoveProjectLeave` when detection returns nil after being in project
 - `check()` is idempotent (doesn't re-fire if state unchanged)
 
 ### `autocmd_spec.lua`
 
-- On `EnterLove2DProject`: calls `job.set_project()`, shows notification
-- On `LeaveLove2DProject`: calls `job.clear_project()`, closes output, notifies
+- On `LoveProjectEnter`: calls `job.set_project()`, shows notification
+- On `LoveProjectLeave`: calls `job.clear_project()`, closes output, notifies
 
 ### `lsp_spec.lua`
 
