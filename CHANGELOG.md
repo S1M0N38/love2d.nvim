@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.0.0](https://github.com/S1M0N38/love2d.nvim/compare/v2.1.0...v3.0.0) (2026-05-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* :LoveRun and :LoveStop commands removed. Use :Love run and :Love stop instead.
+
+### Features
+
+* **autocmd:** add enter/leave project handlers ([962e3ac](https://github.com/S1M0N38/love2d.nvim/commit/962e3ac97794548f6c0cba4a6cfd5126c0a10148))
+* **compiler:** add compiler/love.lua, extract utils.lua ([c091422](https://github.com/S1M0N38/love2d.nvim/commit/c091422ce7d748384fcf063dda74d73e5988ef31))
+* **config:** add lsp option to disable automatic lua_ls setup ([6767874](https://github.com/S1M0N38/love2d.nvim/commit/6767874ee9444f294feb8b4491d64342be387cc9))
+* **events:** add DirChanged/BufEnter project detection events ([2d9e71f](https://github.com/S1M0N38/love2d.nvim/commit/2d9e71f016c578eab956b1d7afd76d17575b2070))
+* **health:** add :checkhealth love2d support ([fa40801](https://github.com/S1M0N38/love2d.nvim/commit/fa4080172a80855b31b8006ee009062528b9f1c3))
+* **init:** add did_setup guard to prevent double setup ([c4842ae](https://github.com/S1M0N38/love2d.nvim/commit/c4842ae540cd44c9ee8a6e2d8fc4d637be110e76))
+* **job:** add process lifecycle module with run/watch/stop/info ([ed0163f](https://github.com/S1M0N38/love2d.nvim/commit/ed0163fbca5cbe8dcd9067d862802473e5ccca44))
+* **output:** add floating output panel with diagnostics ([ea708a9](https://github.com/S1M0N38/love2d.nvim/commit/ea708a9abafd28d356d9efba11d074e86276dff5))
+* **types:** add separate LuaLS type definition file ([377c845](https://github.com/S1M0N38/love2d.nvim/commit/377c84576a43e55fa869de8c74c26d536c2e988d))
+* unified :Love command, lspconfig-free LSP, and auto project detection ([1482651](https://github.com/S1M0N38/love2d.nvim/commit/1482651f41d7d70d0b9054bac4930feb1e61e9c0))
+
+
+### Bug Fixes
+
+* **ci:** add vim as known global in .luarc.json ([44a83bb](https://github.com/S1M0N38/love2d.nvim/commit/44a83bb948b3461dfba1fe3958f0b584dec59aa1))
+* **ci:** pass VIM env var to typecheck action ([4e8df77](https://github.com/S1M0N38/love2d.nvim/commit/4e8df77c747eb7e476a15246006904c9bbd7025d))
+* **ci:** use Neovim runtime types instead of diagnostics.globals hack ([88702a0](https://github.com/S1M0N38/love2d.nvim/commit/88702a0336974299cc94cd6610ba7ae0a4144b09))
+* **compiler:** remove invalid backslash-space escape in errorformat ([a10a59d](https://github.com/S1M0N38/love2d.nvim/commit/a10a59d2706ecb8150b421a8ea9359b30ee97320))
+* **compiler:** use buffer-local guard to allow re-running :compiler love ([71ad1ec](https://github.com/S1M0N38/love2d.nvim/commit/71ad1ec10d8303ff22c2a05639a630f4a4919ca5))
+* **compiler:** use long string syntax for errorformat ([97a6b58](https://github.com/S1M0N38/love2d.nvim/commit/97a6b586571a1f38ab99c4f790f21e43fb994383))
+* **config:** set compiler for already-opened lua buffers ([ec998c6](https://github.com/S1M0N38/love2d.nvim/commit/ec998c60f3249e105eb5f5109404f758d273422b))
+* **job:** pass command as list to jobstart ([cd11091](https://github.com/S1M0N38/love2d.nvim/commit/cd11091cc7a102ebee01d4de5c0cb19af973faf2))
+* **lsp:** add cmd to lua_ls config so the server can start ([f647d44](https://github.com/S1M0N38/love2d.nvim/commit/f647d440ee52c58b47c36f131398e336c8e48eef))
+* **lsp:** register lsp autocmds before events.setup ([d0d2b55](https://github.com/S1M0N38/love2d.nvim/commit/d0d2b55ee9f91ff5d6999cc83f7519dcda7a2581))
+* **plugin:** show usage when :Love is called without args ([e08a035](https://github.com/S1M0N38/love2d.nvim/commit/e08a035dec4370d7ee0cd0dfe909cb7bcb0f88a1))
+* **plugin:** use plain prefix match for :Love completion ([7163390](https://github.com/S1M0N38/love2d.nvim/commit/7163390ae105a38a88990bb40352b5bc16097a5e))
+* **skills:** correct test framework reference in nvim-plugin skill ([8d5fd9a](https://github.com/S1M0N38/love2d.nvim/commit/8d5fd9a35dd0bea8c0cea24283b4a7e9edb39d31))
+* **tests:** restore cwd correctly in events_spec, update job_spec ([ffc6097](https://github.com/S1M0N38/love2d.nvim/commit/ffc609727326e9384bba08c2b2977533da25ab30))
+
 ## [2.1.0](https://github.com/S1M0N38/love2d.nvim/compare/v2.0.0...v2.1.0) (2025-08-04)
 
 
