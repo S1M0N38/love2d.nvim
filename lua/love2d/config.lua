@@ -3,6 +3,7 @@ local config = {}
 config.defaults = {
   path_to_love_bin = "love",
   output = nil,
+  lsp = true,
 }
 
 ---@type Love2D.Config
