@@ -64,11 +64,22 @@ The options are merged with the defaults:
   {
     path_to_love_bin = "love",
     output = nil,
+    lsp = true,
   }
 <
                                                               *love2d.setup()*
 love2d.setup({opts}) ~
 
+
+  `lsp` (boolean)  Enable automatic lua_ls configuration for LÖVE projects.
+    Defaults to `true`. Set to `false` to disable LSP integration entirely
+    — useful if you want to provide your own lua_ls config or use a
+    different language server.
+
+    When `false`, the plugin does not call |vim.lsp.config()|, |vim.lsp.enable()|,
+    or register any LSP autocmds. You are responsible for configuring your
+    language server and making the bundled type definitions available
+    (they remain on |'runtimepath'| for manual use).
 
   `path_to_love_bin` (string)  Path to the LÖVE binary. Defaults to `"love"`,
     which works if `love` is in your `PATH`. On macOS, if you installed LÖVE
