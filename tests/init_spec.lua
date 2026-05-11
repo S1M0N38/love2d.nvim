@@ -65,5 +65,24 @@ describe("init", function()
       local config = require("love2d.config")
       assert.are.equal("/custom/love", config.options.path_to_love_bin)
     end)
+
+    it("sets up lsp autocmds by default", function()
+      pcall(vim.api.nvim_del_augroup_by_name, "love2d_lsp")
+      love2d.setup({})
+      local cmds = vim.api.nvim_get_autocmds({
+        group = "love2d_lsp",
+        event = "User",
+      })
+      assert.are.equal(2, #cmds)
+    end)
+
+    it("skips lsp setup when lsp = false", function()
+      pcall(vim.api.nvim_del_augroup_by_name, "love2d_lsp")
+      love2d.setup({ lsp = false })
+      local ok = pcall(vim.api.nvim_get_autocmds, {
+        group = "love2d_lsp",
+      })
+      assert.is_false(ok)
+    end)
   end)
 end)
