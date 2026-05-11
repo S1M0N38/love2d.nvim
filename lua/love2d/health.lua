@@ -373,6 +373,7 @@ local function check_config()
   local valid_keys = {
     path_to_love_bin = true,
     output = true,
+    lsp = true,
   }
 
   local unknown = {}

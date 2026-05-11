@@ -66,6 +66,8 @@
 ---@class Love2D.Config
 ---@field path_to_love_bin? string Path to the LÖVE executable. (default: `"love"`)
 ---@field output? false|Love2D.Output.WinConfig Output panel behavior. `false` disables auto-open (diagnostics still appear inline). A table is merged with the default floating-window config.
+---@field lsp? boolean Enable automatic lua_ls configuration for LÖVE projects. (default: `true`)
+--- Set to `false` to provide your own LSP config or use a different language server.
 
 ---------------------------------------------------------------------------
 -- 3. Job State
