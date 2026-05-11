@@ -10,10 +10,10 @@ love2d.setup = function(opts)
   love2d.did_setup = true
   require("love2d.config").setup(opts) -- configure love2d.nvim options
   require("love2d.autocmd").setup() -- configure love2d.nvim autocmds
-  require("love2d.events").setup() -- configure love2d.nvim events
   if require("love2d.config").options.lsp then
     require("love2d.lsp").setup() -- configure lua_ls for LÖVE
   end
+  require("love2d.events").setup() -- configure love2d.nvim events
 end
 
 return love2d
