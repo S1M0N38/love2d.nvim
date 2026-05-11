@@ -44,28 +44,28 @@ describe("autocmd", function()
       assert.is_true(ok)
     end)
 
-    it("subscribes to EnterLove2DProject", function()
+    it("subscribes to LoveProjectEnter", function()
       autocmd.setup()
       local cmds = vim.api.nvim_get_autocmds({
         group = "love2d_autocmd",
         event = "User",
-        pattern = "EnterLove2DProject",
+        pattern = "LoveProjectEnter",
       })
       assert.is_true(#cmds >= 1)
     end)
 
-    it("subscribes to LeaveLove2DProject", function()
+    it("subscribes to LoveProjectLeave", function()
       autocmd.setup()
       local cmds = vim.api.nvim_get_autocmds({
         group = "love2d_autocmd",
         event = "User",
-        pattern = "LeaveLove2DProject",
+        pattern = "LoveProjectLeave",
       })
       assert.is_true(#cmds >= 1)
     end)
   end)
 
-  describe("EnterLove2DProject handler", function()
+  describe("LoveProjectEnter handler", function()
     before_each(function()
       -- Reload fresh modules for each test in this block
       autocmd, job, output_mod = reload_autocmd()
@@ -74,7 +74,7 @@ describe("autocmd", function()
 
     it("updates job state with project paths", function()
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "EnterLove2DProject",
+        pattern = "LoveProjectEnter",
         data = {
           path_to_love2d_project = "/project",
           path_to_main_lua = "/project/main.lua",
@@ -86,7 +86,7 @@ describe("autocmd", function()
 
     it("shows notification with project name", function()
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "EnterLove2DProject",
+        pattern = "LoveProjectEnter",
         data = {
           path_to_love2d_project = "/path/to/mygame",
           path_to_main_lua = "/path/to/mygame/main.lua",
@@ -97,7 +97,7 @@ describe("autocmd", function()
     end)
   end)
 
-  describe("LeaveLove2DProject handler", function()
+  describe("LoveProjectLeave handler", function()
     before_each(function()
       -- Reload fresh modules for each test in this block
       autocmd, job, output_mod = reload_autocmd()
@@ -108,7 +108,7 @@ describe("autocmd", function()
 
     it("clears job project state", function()
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "LeaveLove2DProject",
+        pattern = "LoveProjectLeave",
       })
       assert.is_nil(job.state.path_to_love2d_project)
       assert.is_nil(job.state.path_to_main_lua)
@@ -118,14 +118,14 @@ describe("autocmd", function()
       output_mod.append({ "some output" })
       assert.is_not_nil(output_mod.buf)
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "LeaveLove2DProject",
+        pattern = "LoveProjectLeave",
       })
       assert.is_nil(output_mod.buf)
     end)
 
     it("shows notification", function()
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "LeaveLove2DProject",
+        pattern = "LoveProjectLeave",
       })
       assert.are.equal(1, #notify_calls)
       assert.is_truthy(notify_calls[1].msg:match("Left"))

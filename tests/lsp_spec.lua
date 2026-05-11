@@ -173,22 +173,22 @@ describe("lsp", function()
       pcall(vim.api.nvim_del_augroup_by_name, "love2d_lsp")
     end)
 
-    it("creates User autocmds for EnterLove2DProject", function()
+    it("creates User autocmds for LoveProjectEnter", function()
       lsp.setup()
       local cmds = vim.api.nvim_get_autocmds({
         group = "love2d_lsp",
         event = "User",
-        pattern = "EnterLove2DProject",
+        pattern = "LoveProjectEnter",
       })
       assert.are.equal(1, #cmds)
     end)
 
-    it("creates User autocmds for LeaveLove2DProject", function()
+    it("creates User autocmds for LoveProjectLeave", function()
       lsp.setup()
       local cmds = vim.api.nvim_get_autocmds({
         group = "love2d_lsp",
         event = "User",
-        pattern = "LeaveLove2DProject",
+        pattern = "LoveProjectLeave",
       })
       assert.are.equal(1, #cmds)
     end)

@@ -71,7 +71,7 @@ describe("events", function()
       captured_user_events = {}
       -- Capture User autocmd events fired by events.check()
       vim.api.nvim_create_autocmd("User", {
-        pattern = { "EnterLove2DProject", "LeaveLove2DProject" },
+        pattern = { "LoveProjectEnter", "LoveProjectLeave" },
         callback = function(ev)
           table.insert(captured_user_events, {
             pattern = ev.match,
@@ -91,7 +91,7 @@ describe("events", function()
       tmpdirs = {}
     end)
 
-    it("fires EnterLove2DProject when entering a LÖVE project", function()
+    it("fires LoveProjectEnter when entering a LÖVE project", function()
       local dir = make_dir("enter_test", {
         ["conf.lua"] = "function love.conf(t) end",
       })
@@ -103,10 +103,10 @@ describe("events", function()
       -- events.setup() already called check() from cwd, but we cd'd after
       -- So we need to trigger a re-check. We'll fire BufEnter to simulate.
       vim.api.nvim_exec_autocmds("BufEnter", {})
-      -- Should have fired EnterLove2DProject
+      -- Should have fired LoveProjectEnter
       local found = false
       for _, e in ipairs(captured_user_events) do
-        if e.pattern == "EnterLove2DProject" then
+        if e.pattern == "LoveProjectEnter" then
           found = true
           assert.is_not_nil(e.data)
           assert.are.equal(vim.fn.resolve(dir), vim.fn.resolve(e.data.path_to_love2d_project))
@@ -115,7 +115,7 @@ describe("events", function()
       assert.is_true(found)
     end)
 
-    it("fires LeaveLove2DProject when leaving a LÖVE project", function()
+    it("fires LoveProjectLeave when leaving a LÖVE project", function()
       local dir = make_dir("leave_test", {
         ["conf.lua"] = "function love.conf(t) end",
       })
@@ -129,17 +129,17 @@ describe("events", function()
       -- Now leave to a plain directory
       vim.cmd("cd " .. plain_dir)
       vim.api.nvim_exec_autocmds("BufEnter", {})
-      -- Should have fired LeaveLove2DProject
+      -- Should have fired LoveProjectLeave
       local found = false
       for _, e in ipairs(captured_user_events) do
-        if e.pattern == "LeaveLove2DProject" then
+        if e.pattern == "LoveProjectLeave" then
           found = true
         end
       end
       assert.is_true(found)
     end)
 
-    it("does not fire EnterLove2DProject twice when staying in same project", function()
+    it("does not fire LoveProjectEnter twice when staying in same project", function()
       local dir = make_dir("stay_test", {
         ["conf.lua"] = "function love.conf(t) end",
       })
@@ -149,7 +149,7 @@ describe("events", function()
       -- Count enter events so far
       local enter_count = 0
       for _, e in ipairs(captured_user_events) do
-        if e.pattern == "EnterLove2DProject" then
+        if e.pattern == "LoveProjectEnter" then
           enter_count = enter_count + 1
         end
       end
@@ -158,7 +158,7 @@ describe("events", function()
       -- Enter count should not have increased
       local new_enter_count = 0
       for _, e in ipairs(captured_user_events) do
-        if e.pattern == "EnterLove2DProject" then
+        if e.pattern == "LoveProjectEnter" then
           new_enter_count = new_enter_count + 1
         end
       end

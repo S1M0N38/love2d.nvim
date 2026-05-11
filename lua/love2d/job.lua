@@ -19,7 +19,7 @@ function job.set_project(path_to_love2d_project, path_to_main_lua)
 end
 
 ---Clear the current LÖVE project paths and stop everything.
----Called by autocmd on LeaveLove2DProject.
+---Called by autocmd on LoveProjectLeave.
 function job.clear_project()
   job._stop_watch()
   if job.state.id then

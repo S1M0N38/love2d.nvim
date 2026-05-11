@@ -5,12 +5,12 @@ local output = require("love2d.output")
 local augroup = vim.api.nvim_create_augroup("love2d_autocmd", { clear = true })
 
 ---Setup autocmds for love2d.nvim.
----Subscribes to EnterLove2DProject / LeaveLove2DProject User events
+---Subscribes to LoveProjectEnter / LoveProjectLeave User events
 ---and shows notifications.
 function autocmd.setup()
   vim.api.nvim_create_autocmd("User", {
     group = augroup,
-    pattern = "EnterLove2DProject",
+    pattern = "LoveProjectEnter",
     desc = "Notify when entering a LÖVE project",
     callback = function(ev)
       local path = ev.data and ev.data.path_to_love2d_project
@@ -32,7 +32,7 @@ function autocmd.setup()
 
   vim.api.nvim_create_autocmd("User", {
     group = augroup,
-    pattern = "LeaveLove2DProject",
+    pattern = "LoveProjectLeave",
     desc = "Clean up when leaving a LÖVE project",
     callback = function()
       job.clear_project()
