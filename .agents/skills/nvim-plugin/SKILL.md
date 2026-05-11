@@ -52,7 +52,7 @@ LuaCATS type annotation reference for Neovim plugins.
 7. Diagnostic Configuration
 
 ### `references/TESTS.md`
-Testing patterns for writing and implementing tests (busted + luassert).
+Testing patterns for writing and implementing tests (mini.test).
 For running tests and diagnosing failures, use the `nvim-test` skill.
 
 1. Test File Structure
