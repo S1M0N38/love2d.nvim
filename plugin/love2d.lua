@@ -19,6 +19,10 @@ local sub_cmds = {
 local sub_cmds_keys = vim.tbl_keys(sub_cmds)
 
 vim.api.nvim_create_user_command("Love", function(opts)
+  if opts.args == "" then
+    vim.notify("Love: usage :Love <subcommand> (" .. table.concat(sub_cmds_keys, ", ") .. ")", vim.log.levels.WARN, { title = "love2d" })
+    return
+  end
   local sub_cmd = sub_cmds[opts.args]
   if sub_cmd == nil then
     vim.notify("Love: invalid subcommand", vim.log.levels.ERROR, { title = "love2d" })
