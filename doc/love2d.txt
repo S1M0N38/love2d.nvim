@@ -211,7 +211,8 @@ LoveProjectEnter ~
 
                                                             *LoveProjectLeave*
 LoveProjectLeave ~
-  Fired when leaving a LÖVE project. `args.data` is nil.
+  Fired when leaving a LÖVE project. `args.data` is a table with
+  `path_to_love2d_project` and `path_to_main_lua` both set to `nil`.
 
 Detection triggers on |VimEnter|, |DirChanged|, and |BufEnter|.
 
