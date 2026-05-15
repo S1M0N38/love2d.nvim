@@ -44,11 +44,33 @@ local function default_win_config()
   }
 end
 
+---Keys that only apply to split windows (not floating).
+local split_keys = { vertical = true, split = true }
+
+---Keys that only apply to floating windows (not splits).
+local float_keys =
+  { relative = true, anchor = true, row = true, col = true, border = true, title = true, title_pos = true, bufpos = true, zindex = true }
+
 ---Merge user overrides with default window config.
+---If the user provides split-mode keys (`vertical`, `split`), float-only keys
+---are stripped so nvim_open_win() creates a proper split instead of a float.
 ---@param user_opts table? User-provided config (or nil for defaults).
 ---@return table
 local function resolve_win_config(user_opts)
-  return vim.tbl_deep_extend("force", default_win_config(), user_opts or {})
+  local opts = user_opts or {}
+  local is_split = vim.iter(opts):any(function(k, v)
+    return split_keys[k] and v ~= nil
+  end)
+  if is_split then
+    local stripped = {}
+    for k, v in pairs(opts) do
+      if not float_keys[k] then
+        stripped[k] = v
+      end
+    end
+    return stripped
+  end
+  return vim.tbl_deep_extend("force", default_win_config(), opts)
 end
 
 --------------------------------------------------------------------------------
