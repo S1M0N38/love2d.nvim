@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/S1M0N38/love2d.nvim/compare/v3.0.0...v3.0.1) (2026-05-15)
+
+
+### Bug Fixes
+
+* **output:** strip float keys when user requests split window ([47daab5](https://github.com/S1M0N38/love2d.nvim/commit/47daab5569ccb53f16eb7c1b538e575f2664c01f)), closes [#25](https://github.com/S1M0N38/love2d.nvim/issues/25)
+
 ## [3.0.0](https://github.com/S1M0N38/love2d.nvim/compare/v2.1.0...v3.0.0) (2026-05-11)
 
 
