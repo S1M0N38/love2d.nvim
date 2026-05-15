@@ -48,8 +48,17 @@ end
 local split_keys = { vertical = true, split = true }
 
 ---Keys that only apply to floating windows (not splits).
-local float_keys =
-  { relative = true, anchor = true, row = true, col = true, border = true, title = true, title_pos = true, bufpos = true, zindex = true }
+local float_keys = {
+  relative = true,
+  anchor = true,
+  row = true,
+  col = true,
+  border = true,
+  title = true,
+  title_pos = true,
+  bufpos = true,
+  zindex = true,
+}
 
 ---Merge user overrides with default window config.
 ---If the user provides split-mode keys (`vertical`, `split`), float-only keys
