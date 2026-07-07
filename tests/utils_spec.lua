@@ -139,6 +139,17 @@ describe("utils", function()
       assert.is_nil(result)
     end)
 
+    it("finds main.lua with love callback but no conf.lua or .git", function()
+      local dir = make_dir("main_cb_only", {
+        ["main.lua"] = "function love.draw() end",
+      })
+      local old_cwd = vim.fn.getcwd()
+      vim.cmd("cd " .. dir)
+      local result = utils.path_to_main_lua()
+      vim.cmd("cd " .. old_cwd)
+      assert.are.equal(vim.fn.resolve(dir .. "/main.lua"), vim.fn.resolve(result or ""))
+    end)
+
     it("returns nil when conf.lua exists but no main.lua", function()
       local dir = make_dir("no_main", {
         ["conf.lua"] = "function love.conf(t) end",
