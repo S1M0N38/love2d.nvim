@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/S1M0N38/love2d.nvim/compare/v3.0.1...v3.0.2) (2026-07-07)
+
+
+### Bug Fixes
+
+* **utils:** detect project root without conf.lua in path_to_main_lua ([c757c38](https://github.com/S1M0N38/love2d.nvim/commit/c757c3892920c8195c1da14a027972be4ae033aa))
+
 ## [3.0.1](https://github.com/S1M0N38/love2d.nvim/compare/v3.0.0...v3.0.1) (2026-05-15)
 
 
