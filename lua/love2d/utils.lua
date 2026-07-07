@@ -96,7 +96,7 @@ end
 function utils.path_to_main_lua()
   local dir = vim.fn.getcwd()
   while dir do
-    if vim.fn.filereadable(dir .. "/conf.lua") == 1 or vim.fn.isdirectory(dir .. "/.git") == 1 then
+    if is_love2d_root(dir) or vim.fn.isdirectory(dir .. "/.git") == 1 then
       local main = dir .. "/main.lua"
       if vim.fn.filereadable(main) == 1 then
         return main
