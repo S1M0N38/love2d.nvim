@@ -10,6 +10,9 @@
   <a href="https://www.reddit.com/r/neovim/comments/1aol6nt/love2dnvim">
     <img alt="Reddit post" src="https://img.shields.io/badge/post-reddit?style=for-the-badge&label=Reddit&color=FF5700"/>
   </a>
+  <a href="https://love2d.recipes/guides/installation/neovim/">
+    <img alt="LÖVE Cookbook guide" src="https://img.shields.io/badge/guide-FF4278?style=for-the-badge&label=cookbook&color=FF4278"/>
+  </a>
 </p>
 
 ---
